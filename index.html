@@ -3,245 +3,256 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎲 席替えアプリ ワクワク版</title>
+<title>席替えアプリ</title>
 <link href="https://fonts.googleapis.com/css2?family=Kosugi+Maru&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg1:#fff7d6; --bg2:#ffe6f0; --bg3:#dff7ff; --bg4:#e8ffd9;
-  --pink:#ff77a8; --blue:#4ea5ff; --yellow:#ffd83d; --green:#5fd47a; --purple:#a973ff; --orange:#ff9f43;
-  --ink:#23314f; --soft:#647092;
+  --bg1:#f5efe0; --bg2:#f0e6ec; --bg3:#e6eef5; --bg4:#ebf0e8;
+  --pink:#d99fb1; --blue:#8ab1cc; --yellow:#e8d28c; --green:#a8c3a3; --purple:#a89dc4; --orange:#d9b58a;
+  --ink:#3a4762; --soft:#7c8499; --line:#cbd2dc;
 }
 html,body{height:100%}
 body{
   font-family:'Kosugi Maru','Noto Sans JP',sans-serif;
   color:var(--ink);
-  background:
-    radial-gradient(circle at 10% 10%, var(--bg1) 0, transparent 40%),
-    radial-gradient(circle at 90% 20%, var(--bg2) 0, transparent 45%),
-    radial-gradient(circle at 20% 90%, var(--bg3) 0, transparent 45%),
-    radial-gradient(circle at 80% 80%, var(--bg4) 0, transparent 45%),
-    linear-gradient(160deg,#fffdf6,#f3f8ff);
+  background:linear-gradient(160deg,#fdfbf6 0%,#f5f3ec 50%,#eef2f6 100%);
   min-height:100vh; overflow-x:hidden;
 }
-/* Floating decorations */
-.deco{position:fixed; pointer-events:none; opacity:.45; z-index:0; font-size:38px; animation:floaty 6s ease-in-out infinite}
-.deco:nth-child(2){animation-delay:-1.5s}
-.deco:nth-child(3){animation-delay:-3s}
-.deco:nth-child(4){animation-delay:-4.5s}
-@keyframes floaty{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}
+/* (decorations removed for calmer tone) */
 
 /* Header */
 .app-header{
   position:relative; z-index:5;
-  padding:14px 18px;
-  background:linear-gradient(95deg,#ff77a8 0%,#ffd83d 35%,#5fd47a 65%,#4ea5ff 100%);
-  color:#fff; box-shadow:0 6px 0 rgba(0,0,0,.07), 0 12px 28px rgba(99,102,241,.18);
-  border-bottom:5px dashed #fff;
+  padding:16px 20px;
+  background:linear-gradient(95deg,#cdd9e3 0%,#dcd1d9 50%,#d4dcc9 100%);
+  color:var(--ink); box-shadow:0 2px 8px rgba(58,71,98,.08);
+  border-bottom:1px solid var(--line);
   display:flex; align-items:center; justify-content:space-between; gap:8px;
   flex-wrap:wrap;
 }
 .app-header h1{
-  font-family:'Kosugi Maru',sans-serif; font-weight:900; font-size:22px;
-  text-shadow:2px 2px 0 #23314f, 4px 4px 0 rgba(0,0,0,.15);
+  font-family:'Kosugi Maru',sans-serif; font-weight:700; font-size:20px;
   letter-spacing:.5px;
 }
-.app-header h1 .sub{font-size:13px; font-weight:700; opacity:.95; margin-left:6px}
+.app-header h1 .sub{font-size:12px; font-weight:400; opacity:.7; margin-left:6px}
 .header-tools{display:flex; gap:8px}
 .icon-btn{
-  width:42px; height:42px; border-radius:50%; border:3px solid #fff;
-  background:rgba(255,255,255,.25); color:#fff; font-size:20px; cursor:pointer;
-  box-shadow:0 4px 0 rgba(0,0,0,.12); transition:transform .15s;
+  width:40px; height:40px; border-radius:50%; border:1.5px solid var(--line);
+  background:#fff; color:var(--ink); font-size:18px; cursor:pointer;
+  box-shadow:0 2px 4px rgba(58,71,98,.1); transition:all .15s;
 }
-.icon-btn:hover{transform:translateY(-2px) rotate(8deg)}
-.icon-btn:active{transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.12)}
+.icon-btn:hover{transform:translateY(-1px); border-color:var(--purple)}
+.icon-btn:active{transform:translateY(1px)}
 
 /* Tabs */
 .tabs{
   position:sticky; top:0; z-index:50;
-  display:flex; gap:6px; padding:10px 12px;
-  background:rgba(255,255,255,.85); backdrop-filter:blur(8px);
-  border-bottom:3px solid #ffe6f0;
+  display:flex; gap:6px; padding:10px 14px;
+  background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
 }
 .tab{
-  flex:1; max-width:200px; padding:10px 8px;
-  border:3px solid var(--ink); border-radius:14px;
-  background:#fff; color:var(--soft); font-family:inherit; font-weight:700; font-size:14px;
-  cursor:pointer; box-shadow:0 4px 0 var(--ink); transition:all .12s;
+  flex:1; max-width:220px; padding:9px 8px;
+  border:1.5px solid var(--line); border-radius:10px;
+  background:#fff; color:var(--soft); font-family:inherit; font-weight:600; font-size:14px;
+  cursor:pointer; transition:all .15s;
 }
-.tab:hover{transform:translateY(-1px)}
-.tab.active{background:linear-gradient(135deg,#ffd83d,#ff9f43); color:#23314f; transform:translateY(2px); box-shadow:0 2px 0 var(--ink)}
+.tab:hover{border-color:var(--purple); color:var(--ink)}
+.tab.active{background:var(--purple); color:#fff; border-color:var(--purple)}
 
 .content{position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:14px}
 .panel{display:none; flex-direction:column; gap:14px}
 .panel.active{display:flex}
 
 .card{
-  background:#fff; border:3px solid var(--ink); border-radius:18px; padding:16px;
-  box-shadow:0 6px 0 var(--ink), 0 8px 24px rgba(99,102,241,.12);
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px;
+  box-shadow:0 1px 3px rgba(58,71,98,.06), 0 4px 12px rgba(58,71,98,.04);
   position:relative;
 }
-.card h2{font-size:16px; font-weight:900; margin-bottom:12px; display:flex; gap:6px; align-items:center}
-.card h2 .badge-num{font-size:12px; padding:2px 8px; background:var(--yellow); border:2px solid var(--ink); border-radius:99px}
+.card h2{font-size:15px; font-weight:700; margin-bottom:14px; display:flex; gap:6px; align-items:center}
+.card h2 .badge-num{font-size:11px; padding:2px 8px; background:var(--yellow); color:var(--ink); border-radius:99px; font-weight:700}
 
 /* Buttons */
 .btn{
-  padding:8px 16px; border:3px solid var(--ink); border-radius:12px;
-  background:#fff; color:var(--ink); font-family:inherit; font-weight:700; font-size:14px;
-  cursor:pointer; box-shadow:0 4px 0 var(--ink); transition:all .12s; white-space:nowrap;
+  padding:7px 14px; border:1.5px solid var(--line); border-radius:8px;
+  background:#fff; color:var(--ink); font-family:inherit; font-weight:600; font-size:13px;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
 }
-.btn:hover{transform:translateY(-1px)}
-.btn:active{transform:translateY(2px); box-shadow:0 2px 0 var(--ink)}
-.btn-primary{background:linear-gradient(135deg,#4ea5ff,#a973ff); color:#fff}
-.btn-pink{background:linear-gradient(135deg,#ff77a8,#ffd83d); color:#fff}
-.btn-green{background:linear-gradient(135deg,#5fd47a,#4ea5ff); color:#fff}
-.btn-ghost{background:#fff8e1}
-.btn-danger{background:#ffe1e1; color:#c0392b}
-.btn:disabled{opacity:.45; cursor:not-allowed; transform:none; box-shadow:0 2px 0 var(--ink)}
+.btn:hover{border-color:var(--purple); transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--purple); color:#fff; border-color:var(--purple)}
+.btn-primary:hover{background:#8d80b3; border-color:#8d80b3}
+.btn-pink{background:var(--pink); color:#fff; border-color:var(--pink)}
+.btn-green{background:var(--green); color:#fff; border-color:var(--green)}
+.btn-ghost{background:#f7f6f1}
+.btn-danger{background:#fff; color:#b04848; border-color:#e8c4c4}
+.btn-danger:hover{background:#fbeded}
+.btn:disabled{opacity:.4; cursor:not-allowed; transform:none}
 input[type=text],input[type=number],select,textarea{
-  font-family:inherit; font-size:14px; padding:8px 10px;
-  border:2.5px solid var(--ink); border-radius:10px; background:#fff;
-  outline:none;
+  font-family:inherit; font-size:14px; padding:7px 10px;
+  border:1.5px solid var(--line); border-radius:8px; background:#fff;
+  outline:none; transition:border-color .15s;
 }
-input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(78,165,255,.25)}
+input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{border-color:var(--purple); box-shadow:0 0 0 3px rgba(168,157,196,.2)}
 
 /* Roster import tabs */
-.import-tabs{display:flex; gap:6px; margin-bottom:10px}
+.import-tabs{display:flex; gap:4px; margin-bottom:12px; padding:3px; background:#f0eee7; border-radius:10px}
 .import-tabs button{
-  flex:1; padding:8px; border:2.5px solid var(--ink); border-radius:10px;
-  background:#fff; cursor:pointer; font-family:inherit; font-weight:700; font-size:13px;
-  box-shadow:0 3px 0 var(--ink);
+  flex:1; padding:8px; border:none; border-radius:7px;
+  background:transparent; cursor:pointer; font-family:inherit; font-weight:600; font-size:13px; color:var(--soft);
+  transition:all .15s;
 }
-.import-tabs button.active{background:linear-gradient(135deg,#ffd83d,#ff9f43); color:#23314f}
-.import-body{padding:6px 0}
+.import-tabs button.active{background:#fff; color:var(--ink); box-shadow:0 1px 3px rgba(58,71,98,.08)}
+.import-body{padding:4px 0}
 
-.tag-area{display:flex; flex-wrap:wrap; gap:6px; max-height:240px; overflow-y:auto; padding:4px}
+.tag-area{display:flex; flex-wrap:wrap; gap:5px; max-height:240px; overflow-y:auto; padding:4px}
 .tag{
-  display:inline-flex; align-items:center; gap:4px; padding:4px 8px 4px 6px;
-  border:2px solid var(--ink); border-radius:99px; font-size:13px; font-weight:700;
-  background:#fff; box-shadow:0 2px 0 var(--ink);
+  display:inline-flex; align-items:center; gap:4px; padding:3px 8px 3px 6px;
+  border:1px solid var(--line); border-radius:99px; font-size:13px; font-weight:600;
+  background:#fff;
 }
-.tag.male{background:#dff0ff}
-.tag.female{background:#ffe0ec}
+.tag.male{background:#eef4f9; border-color:#d0dde6}
+.tag.female{background:#f7eef2; border-color:#e6d0db}
 .tag .avatar{font-size:16px}
-.tag-x{border:none; background:none; color:#c0392b; font-size:16px; cursor:pointer; line-height:1}
-.gender-sel{border:none !important; background:transparent !important; box-shadow:none !important; padding:0; font-weight:900; cursor:pointer}
+.tag-x{border:none; background:none; color:#b04848; font-size:16px; cursor:pointer; line-height:1; opacity:.6}
+.tag-x:hover{opacity:1}
+.gender-sel{border:none !important; background:transparent !important; box-shadow:none !important; padding:0; font-weight:700; cursor:pointer}
 
 /* Action bar (shuffle buttons) */
 .action-bar{
-  display:flex; gap:10px; flex-wrap:wrap;
-  padding:14px; border:3px dashed var(--ink); border-radius:18px;
-  background:rgba(255,255,255,.7);
+  display:flex; gap:8px; flex-wrap:wrap;
+  padding:12px; border:1px solid var(--line); border-radius:12px;
+  background:#fff;
 }
 .big-btn{
-  flex:1; min-width:160px; padding:14px 16px; font-size:15px; font-weight:900;
-  border:3px solid var(--ink); border-radius:16px; cursor:pointer; font-family:inherit;
-  box-shadow:0 6px 0 var(--ink); transition:all .12s;
+  flex:1; min-width:160px; padding:12px 14px; font-size:14px; font-weight:700;
+  border:1.5px solid var(--line); border-radius:10px; cursor:pointer; font-family:inherit;
+  background:#fff; color:var(--ink);
+  transition:all .15s;
   position:relative;
-  display:flex; align-items:center; justify-content:center; gap:8px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
 }
-.big-btn.full   {background:linear-gradient(135deg,#ff77a8,#ffd83d); color:#fff}
-.big-btn.cross  {background:linear-gradient(135deg,#5fd47a,#4ea5ff); color:#fff}
-.big-btn.rotate {background:linear-gradient(135deg,#a973ff,#ff77a8); color:#fff}
-.big-btn.confirm{background:linear-gradient(135deg,#ffd83d,#5fd47a); color:#23314f; font-size:18px}
+.big-btn.full   {background:#ede6ec; border-color:#dec8d8; color:#5d3f50}
+.big-btn.cross  {background:#e6ede6; border-color:#c8d8c8; color:#3f5d3f}
+.big-btn.rotate {background:#e6e8ed; border-color:#c8cdd8; color:#3f4456}
+.big-btn.confirm{background:var(--purple); border-color:var(--purple); color:#fff; font-size:15px}
+.big-btn.confirm:hover:not(:disabled){background:#8d80b3; border-color:#8d80b3}
 .big-btn.ghost  {background:#fff}
-.big-btn:hover:not(:disabled){transform:translateY(-2px); box-shadow:0 8px 0 var(--ink)}
-.big-btn:active:not(:disabled){transform:translateY(3px); box-shadow:0 3px 0 var(--ink)}
-.big-btn:disabled{opacity:.5; cursor:not-allowed}
+.big-btn:hover:not(:disabled){transform:translateY(-1px); box-shadow:0 3px 8px rgba(58,71,98,.1)}
+.big-btn:active:not(:disabled){transform:translateY(0)}
+.big-btn:disabled{opacity:.4; cursor:not-allowed}
 
 .dir-toggle{
   position:absolute; right:6px; top:50%; transform:translateY(-50%);
-  width:34px; height:34px; border-radius:50%; border:2.5px solid var(--ink);
-  background:#fff; color:var(--ink); font-size:18px; cursor:pointer;
-  box-shadow:0 3px 0 var(--ink);
+  width:30px; height:30px; border-radius:50%; border:1.5px solid var(--line);
+  background:#fff; color:var(--ink); font-size:15px; cursor:pointer;
 }
 
 /* Dual board */
 .dual-board{
-  display:grid; gap:10px;
-  padding:10px; border:3px solid var(--ink); border-radius:18px;
-  background:rgba(255,255,255,.6);
+  display:grid; gap:14px;
+  padding:14px; border:1px solid var(--line); border-radius:14px;
+  background:#fafaf6;
 }
 .dual-board[data-orient="vertical"]{grid-template-rows:1fr auto 1fr}
 .dual-board[data-orient="horizontal"]{grid-template-columns:1fr auto 1fr}
 .board{
   position:relative;
-  border:3px solid var(--ink); border-radius:14px;
-  padding:8px; background:linear-gradient(180deg,#fffaf0,#fff8e1);
-  display:flex; flex-direction:column; gap:6px; min-height:240px;
+  border:1px solid var(--line); border-radius:12px;
+  padding:14px 12px 12px; background:#fff;
+  display:flex; gap:8px; min-height:240px;
 }
-.board.target-hi{ box-shadow:0 0 0 4px var(--green), 0 6px 0 var(--ink) }
-.board--proposed{background:linear-gradient(180deg,#f3ffec,#dff7ff)}
+.board[data-side="top"]{flex-direction:column}
+.board[data-side="bottom"]{flex-direction:column-reverse}
+.board[data-side="left"]{flex-direction:row}
+.board[data-side="right"]{flex-direction:row-reverse}
+.board.target-hi{ box-shadow:0 0 0 3px rgba(168,157,196,.4); border-color:var(--purple) }
+.board--proposed{background:#fafdfa}
 .board-label{
-  position:absolute; top:-12px; left:14px;
-  background:var(--yellow); color:var(--ink); padding:2px 12px;
-  border:2.5px solid var(--ink); border-radius:99px; font-weight:900; font-size:13px;
-  box-shadow:0 3px 0 var(--ink);
+  position:absolute; top:-10px; left:14px;
+  background:#fff; color:var(--ink); padding:2px 10px;
+  border:1px solid var(--line); border-radius:99px; font-weight:700; font-size:12px;
 }
-.board--proposed .board-label{background:#a8ffaa}
+.board--proposed .board-label{color:#3f5d3f}
 .blackboard{
-  align-self:center; padding:4px 22px;
-  background:linear-gradient(180deg,#0f3d2e,#0a261c); color:#fff8d2;
-  border-radius:6px; font-size:12px; letter-spacing:2px; font-weight:700;
-  border-bottom:6px solid #b07a3f; border-top:3px solid #ffd47a; box-shadow:0 4px 8px rgba(0,0,0,.15)
+  align-self:center; padding:5px 24px;
+  background:linear-gradient(180deg,#3a4a3a,#2a3a2a); color:#f3eed5;
+  border-radius:4px; font-size:11px; letter-spacing:2px; font-weight:600;
+  border-bottom:3px solid #8a6a4a;
+}
+.board[data-side="left"] .blackboard,
+.board[data-side="right"] .blackboard{
+  writing-mode:vertical-rl; text-orientation:mixed; padding:24px 5px;
+  align-self:stretch; flex-shrink:0;
 }
 .divider{
-  text-align:center; padding:6px; font-weight:900; color:var(--purple);
-  font-size:14px; letter-spacing:1px;
-  background:repeating-linear-gradient(45deg,#fff8e1,#fff8e1 8px,#ffe6f0 8px,#ffe6f0 16px);
-  border:2.5px dashed var(--ink); border-radius:12px;
+  text-align:center; padding:8px; font-weight:600; color:var(--soft);
+  font-size:13px; letter-spacing:1px;
+  background:#fff; border:1px dashed var(--line); border-radius:10px;
 }
 .dual-board[data-orient="horizontal"] .divider{
-  writing-mode:vertical-rl; text-orientation:mixed; padding:8px 4px;
+  writing-mode:vertical-rl; text-orientation:mixed; padding:10px 6px;
 }
 .seat-grid{
   flex:1; display:grid; gap:6px; padding:4px; min-height:120px;
 }
 
+/* Blackboard side selector */
+.bb-side-sel{
+  display:inline-flex; gap:2px; padding:3px; background:#f0eee7; border-radius:8px;
+  margin-left:6px;
+}
+.bb-side-sel button{
+  border:none; background:transparent; padding:4px 8px; border-radius:6px;
+  font-family:inherit; font-size:12px; font-weight:600; color:var(--soft); cursor:pointer;
+}
+.bb-side-sel button.active{background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(58,71,98,.08)}
+
 .seat{
   position:relative;
-  border:3px solid var(--ink); border-radius:12px;
+  border:1.5px solid var(--line); border-radius:10px;
   background:#fff;
-  min-height:62px;
+  min-height:60px;
   display:flex; flex-direction:column; align-items:center; justify-content:center;
-  font-size:12px; font-weight:700; cursor:grab; user-select:none;
-  box-shadow:0 4px 0 var(--ink);
+  font-size:12px; font-weight:600; cursor:grab; user-select:none;
+  box-shadow:0 1px 2px rgba(58,71,98,.05);
   padding:4px 2px;
-  transition:transform .12s, box-shadow .12s;
+  transition:all .15s;
 }
-.seat:hover{transform:translateY(-2px); box-shadow:0 6px 0 var(--ink)}
+.seat:hover{transform:translateY(-1px); border-color:var(--purple); box-shadow:0 2px 6px rgba(168,157,196,.18)}
 .seat:active{cursor:grabbing}
-.seat.dragging{opacity:.4; transform:scale(.95) rotate(-3deg)}
+.seat.dragging{opacity:.35; transform:scale(.95)}
 .seat.empty{
-  background:repeating-linear-gradient(45deg,#fff,#fff 6px,#f3f4f6 6px,#f3f4f6 12px);
-  border-style:dashed; cursor:default; box-shadow:0 2px 0 #cbd5e1;
+  background:#fbfaf6;
+  border-style:dashed; cursor:default; box-shadow:none;
 }
-.seat.empty:hover{transform:none; box-shadow:0 2px 0 #cbd5e1}
-.seat.empty .empty-mark{font-size:24px; color:#cbd5e1}
+.seat.empty:hover{transform:none; border-color:var(--line); box-shadow:none}
+.seat.empty .empty-mark{font-size:18px; color:#cbd2dc}
 .seat.disabled{
-  background:#e2e8f0; border-style:dotted; cursor:default; box-shadow:0 2px 0 var(--ink);
-  opacity:.5;
+  background:#f0eee7; border-style:dotted; cursor:default;
+  opacity:.55;
 }
-.seat.drop-hi{box-shadow:0 0 0 4px var(--green), 0 4px 0 var(--ink); background:#e6ffd9}
-.seat.cbm{background:linear-gradient(180deg,#dff0ff,#bae0ff)}
-.seat.cbf{background:linear-gradient(180deg,#ffe0ec,#ffc6dc)}
-.seat .avatar{font-size:22px; line-height:1; margin-bottom:2px}
+.seat.drop-hi{box-shadow:0 0 0 3px rgba(168,157,196,.4); border-color:var(--purple); background:#f6f3fb}
+.seat.cbm{background:#eef4f9}
+.seat.cbf{background:#f7eef2}
+.seat .avatar{font-size:20px; line-height:1; margin-bottom:2px}
 .seat .nm{font-size:12px; line-height:1.2; text-align:center; word-break:break-all; max-width:100%}
 .seat .gb{
-  position:absolute; top:-9px; right:-6px;
-  font-size:10px; font-weight:900; padding:1px 6px; border-radius:99px;
-  background:var(--purple); color:#fff; border:2px solid var(--ink); box-shadow:0 2px 0 var(--ink);
+  position:absolute; top:-7px; right:-4px;
+  font-size:10px; font-weight:700; padding:1px 6px; border-radius:99px;
+  background:var(--purple); color:#fff;
 }
 .seat .gn{
-  position:absolute; bottom:-8px; left:-6px;
-  font-size:9px; font-weight:900; padding:1px 5px; border-radius:99px;
-  background:#fff; color:var(--ink); border:2px solid var(--ink); box-shadow:0 2px 0 var(--ink);
+  position:absolute; bottom:-7px; left:-4px;
+  font-size:9px; font-weight:700; padding:1px 5px; border-radius:99px;
+  background:#fff; color:var(--ink); border:1px solid var(--line);
 }
 .seat .pin{position:absolute; top:2px; right:3px; font-size:11px}
-.seat .zoneM, .seat .zoneF{position:absolute; top:2px; left:3px; font-size:9px; font-weight:900}
-.seat .zoneM{color:#1d4ed8}
-.seat .zoneF{color:#be185d}
-.seat .seat-num{position:absolute; bottom:1px; right:3px; font-size:9px; color:#94a3b8}
+.seat .zoneM, .seat .zoneF{position:absolute; top:2px; left:3px; font-size:9px; font-weight:700}
+.seat .zoneM{color:#5d7da8}
+.seat .zoneF{color:#a85d7d}
+.seat .seat-num{position:absolute; bottom:1px; right:3px; font-size:9px; color:var(--soft)}
 
 /* Confirm bar */
 .confirm-bar{display:flex; gap:10px; flex-wrap:wrap}
@@ -387,23 +398,17 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 </head>
 <body>
 
-<!-- Floating decorations -->
-<div class="deco" style="left:3%; top:25%">⭐</div>
-<div class="deco" style="right:6%; top:40%">🎈</div>
-<div class="deco" style="left:8%; bottom:18%">🍡</div>
-<div class="deco" style="right:4%; bottom:8%">🎀</div>
-
 <header class="app-header">
-  <h1>🎲 席替えアプリ <span class="sub">～ワクワク版～</span></h1>
+  <h1>席替えアプリ <span class="sub">classroom seating</span></h1>
   <div class="header-tools">
-    <button class="icon-btn" id="orient-toggle" title="2分割の向きを切替">↕↔</button>
-    <button class="icon-btn" id="open-settings" title="細かい設定">⚙️</button>
+    <button class="icon-btn" id="orient-toggle" title="2分割の向きを切替">⇅</button>
+    <button class="icon-btn" id="open-settings" title="細かい設定">⚙</button>
   </div>
 </header>
 
 <nav class="tabs">
-  <button class="tab active" data-tab="roster">👥 名簿</button>
-  <button class="tab"        data-tab="seating">🎲 席替え</button>
+  <button class="tab active" data-tab="roster">⚙ 初期設定</button>
+  <button class="tab"        data-tab="seating">🪑 席替え</button>
   <button class="tab"        data-tab="history">📋 履歴</button>
 </nav>
 
@@ -413,48 +418,53 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
   <section id="panel-roster" class="panel active">
 
     <div class="card">
-      <h2 id="roster-title"><span class="badge-num">①</span> 名簿を読み込もう</h2>
+      <h2 id="roster-title"><span class="badge-num">①</span> データ取込</h2>
+      <p style="font-size:12px; color:var(--soft); margin:-4px 0 12px">取り込み元を選んで名簿を読み込みます。</p>
 
       <div class="import-tabs">
-        <button id="imp-single" class="active" onclick="setImportTab('single')">✏️ 1人ずつ</button>
-        <button id="imp-paste"               onclick="setImportTab('paste')">📋 貼り付け</button>
-        <button id="imp-excel"               onclick="setImportTab('excel')">📊 Excel</button>
+        <button id="imp-paste"  class="active" onclick="setImportTab('paste')">📋 入力（コピー&ペースト）</button>
+        <button id="imp-gsheet"             onclick="setImportTab('gsheet')">📑 Googleスプレッドシート</button>
+        <button id="imp-excel"              onclick="setImportTab('excel')">📊 Excel</button>
       </div>
 
-      <div id="imp-body-single" class="import-body">
-        <div class="row">
-          <input type="text" id="new-name" placeholder="名前（例：田中 太郎）" style="flex:1; min-width:120px" onkeydown="if(event.key==='Enter')addStudent()">
-          <select id="new-gender">
-            <option value="male">♂ 男</option>
-            <option value="female">♀ 女</option>
-          </select>
-          <button class="btn btn-primary" onclick="addStudent()">追加</button>
+      <div id="imp-body-paste" class="import-body">
+        <div style="background:#f7f6f1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:12px; line-height:1.7; margin-bottom:10px; color:var(--soft)">
+          1行に1人ずつ入力／貼り付け。<br>
+          名前のみ → <code style="background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)">田中 太郎</code><br>
+          名前＋性別 → <code style="background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)">田中 太郎 男</code>／<code style="background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)">佐藤 花子 女</code>
         </div>
-      </div>
-
-      <div id="imp-body-paste" class="import-body" style="display:none">
-        <div style="background:#fff8e1; border:2.5px solid var(--ink); border-radius:10px; padding:8px 10px; font-size:12px; line-height:1.7; margin-bottom:8px">
-          1行に1人ずつ。<br>
-          名前のみ → <code style="background:#ffe6f0; padding:1px 4px; border-radius:4px">田中 太郎</code><br>
-          名前＋性別 → <code style="background:#ffe6f0; padding:1px 4px; border-radius:4px">田中 太郎 男</code>／<code style="background:#ffe6f0; padding:1px 4px; border-radius:4px">佐藤 花子 女</code>
-        </div>
-        <textarea id="paste-area" placeholder="田中 太郎 男&#10;佐藤 花子 女&#10;鈴木 一郎" style="width:100%; height:120px; resize:vertical"></textarea>
+        <textarea id="paste-area" placeholder="田中 太郎 男&#10;佐藤 花子 女&#10;鈴木 一郎" style="width:100%; height:140px; resize:vertical"></textarea>
         <div class="row" style="margin-top:8px">
           <label class="toggle"><input type="checkbox" id="paste-replace"> 既存を上書き</label>
           <div style="flex:1"></div>
           <button class="btn" onclick="document.getElementById('paste-area').value=''">クリア</button>
-          <button class="btn btn-primary" onclick="importFromPaste()">👀 確認して読込</button>
+          <button class="btn btn-primary" onclick="importFromPaste()">確認して読込</button>
         </div>
         <div id="paste-preview" style="display:none; margin-top:10px"></div>
       </div>
 
-      <div id="imp-body-excel" class="import-body" style="display:none">
-        <div style="background:#e8ffd9; border:2.5px solid var(--ink); border-radius:10px; padding:8px 10px; font-size:12px; margin-bottom:8px">
-          A列＝名前、B列＝性別（男／女）。ヘッダー行は自動スキップします。
+      <div id="imp-body-gsheet" class="import-body" style="display:none">
+        <div style="background:#f7f6f1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:12px; line-height:1.7; margin-bottom:10px; color:var(--soft)">
+          Googleスプレッドシートで A列＝名前、B列＝性別 のセルを選択してコピー（Ctrl+C / ⌘+C）→ 下に貼り付け。<br>
+          タブ区切りのまま貼り付けて OK です。
         </div>
-        <label id="excel-zone" style="display:flex; flex-direction:column; align-items:center; gap:4px; padding:24px; border:3px dashed var(--green); border-radius:14px; background:#f3ffec; cursor:pointer">
-          <span style="font-size:36px">📂</span>
-          <span style="font-weight:900">クリック または ドラッグ＆ドロップ</span>
+        <textarea id="gsheet-area" placeholder="田中 太郎	男&#10;佐藤 花子	女&#10;鈴木 一郎	男" style="width:100%; height:140px; resize:vertical"></textarea>
+        <div class="row" style="margin-top:8px">
+          <label class="toggle"><input type="checkbox" id="gsheet-replace"> 既存を上書き</label>
+          <div style="flex:1"></div>
+          <button class="btn" onclick="document.getElementById('gsheet-area').value=''">クリア</button>
+          <button class="btn btn-primary" onclick="importFromGsheet()">確認して読込</button>
+        </div>
+        <div id="gsheet-preview" style="display:none; margin-top:10px"></div>
+      </div>
+
+      <div id="imp-body-excel" class="import-body" style="display:none">
+        <div style="background:#f7f6f1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:12px; margin-bottom:10px; color:var(--soft)">
+          A列＝名前、B列＝性別（男／女）。ヘッダー行は自動でスキップします。
+        </div>
+        <label id="excel-zone" style="display:flex; flex-direction:column; align-items:center; gap:4px; padding:28px; border:1.5px dashed var(--line); border-radius:10px; background:#fbfaf6; cursor:pointer; transition:all .15s">
+          <span style="font-size:32px; opacity:.6">📂</span>
+          <span style="font-weight:600">クリック または ドラッグ＆ドロップ</span>
           <span style="font-size:11px; color:var(--soft)">.xlsx / .xls / .csv</span>
           <input type="file" id="excel-file" accept=".xlsx,.xls,.csv" style="display:none">
         </label>
@@ -472,8 +482,17 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         <label>班人数 <select id="group-size">
           <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option>
         </select></label>
-        <button class="btn btn-green" onclick="autoLayoutGroups(); renderAllBoards(); save();">🪄 自動配置</button>
-        <span id="seat-stats" style="font-size:12px; color:var(--soft); font-weight:700"></span>
+        <button class="btn" onclick="autoLayoutGroups(); renderAllBoards(); save();">班を自動配置</button>
+        <span id="seat-stats" style="font-size:12px; color:var(--soft); font-weight:600"></span>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <label style="font-size:13px; color:var(--soft)">黒板の位置：</label>
+        <div class="bb-side-sel" id="bb-side-sel">
+          <button data-side="top">↑ 前</button>
+          <button data-side="bottom">↓ 後</button>
+          <button data-side="left">← 左</button>
+          <button data-side="right">→ 右</button>
+        </div>
       </div>
       <div class="mode-row" style="margin-top:8px">
         <button class="chip active" data-mode="view"    onclick="setEditMode('view')">👁 表示</button>
@@ -489,8 +508,8 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
     </div>
 
     <div class="card">
-      <h2>↔️ 離席ルール</h2>
-      <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「AさんとBさんを○マス以上離す」というルール。距離は縦・横・斜めを含むマス数。</p>
+      <h2>↔ 離席ルール（離す）</h2>
+      <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「A さんと B さんを ○ マス以上 <strong>離す</strong>」。距離は縦・横・斜めを含むマス数。</p>
       <div class="row">
         <select id="rule-s1" style="flex:1; min-width:100px"><option value="">生徒A</option></select>
         <span>と</span>
@@ -501,6 +520,21 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         <button class="btn btn-primary" onclick="addSepRule()">追加</button>
       </div>
       <div id="rules-list" style="margin-top:8px"></div>
+    </div>
+
+    <div class="card">
+      <h2>🤝 同席ルール（近づける）</h2>
+      <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「A さんと B さんを ○ マス以内に <strong>近づける</strong>」。例：相棒同士、サポートが必要な児童など。</p>
+      <div class="row">
+        <select id="comp-s1" style="flex:1; min-width:100px"><option value="">生徒A</option></select>
+        <span>と</span>
+        <select id="comp-s2" style="flex:1; min-width:100px"><option value="">生徒B</option></select>
+        <span>を</span>
+        <input type="number" id="comp-dist" min="1" max="20" value="2" style="width:60px">
+        <span>マス以内</span>
+        <button class="btn btn-primary" onclick="addCompRule()">追加</button>
+      </div>
+      <div id="comp-rules-list" style="margin-top:8px"></div>
     </div>
 
   </section>
@@ -518,23 +552,23 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
     </div>
 
     <div class="dual-board" id="dual-board" data-orient="vertical">
-      <div class="board board--current" id="board-current">
-        <div class="board-label">📍 いまの席</div>
-        <div class="blackboard">⬆ 黒板 ⬆</div>
+      <div class="board board--current" id="board-current" data-side="top">
+        <div class="board-label">いまの席</div>
+        <div class="blackboard">黒板</div>
         <div class="seat-grid" id="grid-current"></div>
       </div>
-      <div class="divider" id="divider">↓ ドラッグして机を動かそう ↓</div>
-      <div class="board board--proposed" id="board-proposed">
-        <div class="board-label">✨ あたらしい席</div>
-        <div class="blackboard">⬆ 黒板 ⬆</div>
+      <div class="divider" id="divider">ドラッグして机を動かそう</div>
+      <div class="board board--proposed" id="board-proposed" data-side="top">
+        <div class="board-label">あたらしい席</div>
+        <div class="blackboard">黒板</div>
         <div class="seat-grid" id="grid-proposed"></div>
       </div>
     </div>
 
     <div class="confirm-bar">
-      <button class="big-btn confirm" onclick="confirmSeating()">✨ この席に決定！</button>
-      <button class="big-btn ghost"   onclick="copyCurrentToProposed(true)">🔁 やり直す</button>
-      <button class="big-btn ghost"   onclick="clearProposed()">🧹 新席をクリア</button>
+      <button class="big-btn confirm" onclick="confirmSeating()">この席に決定</button>
+      <button class="big-btn ghost"   onclick="resetCurrent()">やり直す</button>
+      <button class="big-btn ghost"   onclick="clearProposed()">新席をクリア</button>
     </div>
 
   </section>
@@ -626,7 +660,8 @@ var state = {
   disabled: [],
   zoneM: [], zoneF: [],
   fixed: {},          // {seatIdx: studentId}
-  sepRules: [],
+  sepRules: [],       // {id, s1id, s2id, dist} → 離す
+  compRules: [],      // {id, s1id, s2id, dist} → 近づける
   current: null,      // [studentId|null] length = rows*cols
   proposed: null,     // [studentId|null] length = rows*cols
   history: [],
@@ -637,13 +672,15 @@ var state = {
   groupOffsets: [1, 2, -1, -2, 3, -3],
   // UI
   boardOrient: 'vertical',
+  boardSide: 'top',   // top | bottom | left | right - blackboard position
   editMode: 'view',
   selectedSeat: null,
   // Settings
   options: {
-    keepFixed: true, keepZone: true, sepRules: true, sepGender: false,
+    keepFixed: true, keepZone: true, sepRules: true, compRules: true, sepGender: false,
     maxTry: 500,
-    animSpeed: 'normal', sound: true, confetti: true, emoji: true, genderColor: false
+    animSpeed: 'normal', sound: true, confetti: true, emoji: true, genderColor: false,
+    showMovement: true   // show actual desk movement during shuffle
   }
 };
 
@@ -715,7 +752,7 @@ function switchTab(name){
   var el = document.getElementById('panel-' + name);
   if (el) el.classList.add('active');
   if (name === 'seating') {
-    if (!state.proposed) copyCurrentToProposed(true);
+    copyCurrentToProposed(false);
     renderAllBoards();
   }
   if (name === 'history') renderHistory();
@@ -726,7 +763,7 @@ function switchTab(name){
 // IMPORT TABS
 // =================================================================
 function setImportTab(t){
-  ['single','paste','excel'].forEach(function(k){
+  ['paste','gsheet','excel'].forEach(function(k){
     document.getElementById('imp-' + k).classList.toggle('active', k === t);
     document.getElementById('imp-body-' + k).style.display = (k === t) ? 'block' : 'none';
   });
@@ -762,7 +799,7 @@ function renderRoster(){
   var m = state.students.filter(function(s){ return s.gender === 'male'; }).length;
   var f = state.students.filter(function(s){ return s.gender === 'female'; }).length;
   document.getElementById('roster-title').innerHTML =
-    '<span class="badge-num">①</span> 名簿（' + state.students.length + '人 / ♂' + m + ' ♀' + f + '）';
+    '<span class="badge-num">①</span> データ取込（' + state.students.length + '人 / ♂' + m + ' ♀' + f + '）';
 
   if (!state.students.length) {
     el.innerHTML = '<span style="color:var(--soft); font-size:13px">ここに名前が並びます</span>';
@@ -1039,18 +1076,36 @@ function checkSepRules(seating){
   }
   return true;
 }
+function checkCompRules(seating){
+  for (var i = 0; i < state.compRules.length; i++) {
+    var r = state.compRules[i];
+    var pA = seating.indexOf(r.s1id);
+    var pB = seating.indexOf(r.s2id);
+    if (pA === -1 || pB === -1) continue;
+    if (seatDist(pA, pB) > r.dist) return false;
+  }
+  return true;
+}
 function countViolations(seating){
-  return state.sepRules.reduce(function(acc, r){
+  var v = 0;
+  state.sepRules.forEach(function(r){
     var pA = seating.indexOf(r.s1id), pB = seating.indexOf(r.s2id);
-    if (pA === -1 || pB === -1) return acc;
-    return acc + (seatDist(pA, pB) < r.dist ? 1 : 0);
-  }, 0);
+    if (pA === -1 || pB === -1) return;
+    if (seatDist(pA, pB) < r.dist) v++;
+  });
+  state.compRules.forEach(function(r){
+    var pA = seating.indexOf(r.s1id), pB = seating.indexOf(r.s2id);
+    if (pA === -1 || pB === -1) return;
+    if (seatDist(pA, pB) > r.dist) v++;
+  });
+  return v;
 }
 function renderRuleSelects(){
-  ['rule-s1','rule-s2'].forEach(function(id){
+  ['rule-s1','rule-s2','comp-s1','comp-s2'].forEach(function(id){
     var sel = document.getElementById(id); if (!sel) return;
     var cur = sel.value;
-    sel.innerHTML = '<option value="">' + (id === 'rule-s1' ? '生徒A' : '生徒B') + '</option>';
+    var label = (id === 'rule-s1' || id === 'comp-s1') ? '生徒A' : '生徒B';
+    sel.innerHTML = '<option value="">' + label + '</option>';
     state.students.forEach(function(s){
       var opt = document.createElement('option');
       opt.value = s.id; opt.textContent = (s.gender === 'male' ? '♂' : '♀') + ' ' + s.name;
@@ -1075,25 +1130,49 @@ function removeSepRule(id){
   save(); renderRulesList();
 }
 function renderRulesList(){
-  var el = document.getElementById('rules-list');
-  if (!state.sepRules.length) {
-    el.innerHTML = '<p style="font-size:12px; color:var(--soft); text-align:center; padding:6px">ルールなし</p>';
-    return;
-  }
-  el.innerHTML = state.sepRules.map(function(r){
+  var sep = document.getElementById('rules-list');
+  var comp = document.getElementById('comp-rules-list');
+  function pillFor(r, kind, suffix){
     var a = findStudent(r.s1id), b = findStudent(r.s2id);
     if (!a || !b) return '';
-    return '<div style="display:flex; align-items:center; gap:6px; padding:6px 10px; background:#fff8e1; border:2px solid var(--ink); border-radius:10px; margin-bottom:5px; flex-wrap:wrap; box-shadow:0 3px 0 var(--ink)">' +
-      '<span style="font-weight:700">' + (a.gender === 'male' ? '♂' : '♀') + ' ' + a.name + '</span>' +
-      '<span>と</span>' +
-      '<span style="font-weight:700">' + (b.gender === 'male' ? '♂' : '♀') + ' ' + b.name + '</span>' +
-      '<span>を</span>' +
-      '<span style="font-weight:900; color:var(--purple)">' + r.dist + '</span>' +
-      '<span>マス以上</span>' +
+    var bg = (kind === 'sep') ? '#f7f0ec' : '#eef3f0';
+    var bc = (kind === 'sep') ? '#e6d3c5' : '#c8d8c8';
+    var fn = (kind === 'sep') ? 'removeSepRule' : 'removeCompRule';
+    return '<div style="display:flex; align-items:center; gap:6px; padding:6px 10px; background:' + bg + '; border:1px solid ' + bc + '; border-radius:8px; margin-bottom:5px; flex-wrap:wrap">' +
+      '<span style="font-weight:600">' + (a.gender === 'male' ? '♂' : '♀') + ' ' + a.name + '</span>' +
+      '<span style="font-size:12px; color:var(--soft)">と</span>' +
+      '<span style="font-weight:600">' + (b.gender === 'male' ? '♂' : '♀') + ' ' + b.name + '</span>' +
+      '<span style="font-size:12px; color:var(--soft)">を</span>' +
+      '<span style="font-weight:700; color:var(--purple)">' + r.dist + '</span>' +
+      '<span style="font-size:12px; color:var(--soft)">' + suffix + '</span>' +
       '<div style="flex:1"></div>' +
-      '<button class="tag-x" onclick="removeSepRule(\'' + r.id + '\')">×</button>' +
+      '<button class="tag-x" onclick="' + fn + '(\'' + r.id + '\')">×</button>' +
     '</div>';
-  }).join('');
+  }
+  if (sep) {
+    if (!state.sepRules.length) sep.innerHTML = '<p style="font-size:12px; color:var(--soft); text-align:center; padding:6px">ルールなし</p>';
+    else sep.innerHTML = state.sepRules.map(function(r){ return pillFor(r, 'sep', 'マス以上 離す'); }).join('');
+  }
+  if (comp) {
+    if (!state.compRules.length) comp.innerHTML = '<p style="font-size:12px; color:var(--soft); text-align:center; padding:6px">ルールなし</p>';
+    else comp.innerHTML = state.compRules.map(function(r){ return pillFor(r, 'comp', 'マス以内に 近づける'); }).join('');
+  }
+}
+
+function addCompRule(){
+  var s1 = document.getElementById('comp-s1').value;
+  var s2 = document.getElementById('comp-s2').value;
+  var d  = parseInt(document.getElementById('comp-dist').value) || 2;
+  if (!s1 || !s2) { showToast('生徒AとBを両方選んでください', 'error'); return; }
+  if (s1 === s2)  { showToast('同じ生徒は選べません', 'error'); return; }
+  var dup = state.compRules.some(function(r){ return (r.s1id === s1 && r.s2id === s2) || (r.s1id === s2 && r.s2id === s1); });
+  if (dup) { showToast('同じペアのルールが既にあります', 'error'); return; }
+  state.compRules.push({ id: uid(), s1id: s1, s2id: s2, dist: clamp(d,1,20) });
+  save(); renderRulesList(); showToast('同席ルールを追加');
+}
+function removeCompRule(id){
+  state.compRules = state.compRules.filter(function(r){ return r.id !== id; });
+  save(); renderRulesList();
 }
 
 // =================================================================
@@ -1146,10 +1225,14 @@ function performFullShuffle(){
 
   var seating = null;
   var MAX = clamp(state.options.maxTry, 50, 5000);
-  if (sepRules) {
+  var checkRules = state.options.sepRules || state.options.compRules;
+  if (checkRules) {
     for (var t = 0; t < MAX; t++) {
       var c = tryArrange();
-      if (checkSepRules(c)) { seating = c; break; }
+      var ok = true;
+      if (state.options.sepRules  && !checkSepRules(c))  ok = false;
+      if (state.options.compRules && !checkCompRules(c)) ok = false;
+      if (ok) { seating = c; break; }
     }
     if (!seating) {
       var bestV = Infinity, best = null;
@@ -1159,7 +1242,7 @@ function performFullShuffle(){
         if (v < bestV) { bestV = v; best = c2; }
       }
       seating = best;
-      showToast('⚠️ 離席ルールを完全に満たせず（' + bestV + '件未達）', 'error');
+      showToast('⚠ ルールを完全には満たせず（' + bestV + '件未達）', 'error');
     }
   } else {
     seating = tryArrange();
@@ -1170,8 +1253,19 @@ function performFullShuffle(){
 // =================================================================
 // GROUP CROSS SHUFFLE
 // =================================================================
+// Returns the seating array that should be used as input ("source") for shuffles.
+// Prefers state.proposed (most recent), falls back to state.current.
+function getSourceSeating(){
+  function hasStudents(arr){ return arr && arr.some(function(s){ return !!s; }); }
+  if (hasStudents(state.proposed)) return { board: 'proposed', arr: state.proposed };
+  if (hasStudents(state.current))  return { board: 'current',  arr: state.current  };
+  return null;
+}
+
 function performGroupCrossShuffle(){
-  if (!state.current) { showToast('まずは席替えしてください', 'error'); return null; }
+  var src = getSourceSeating();
+  if (!src) { showToast('まずは席を埋めてください', 'error'); return null; }
+  var srcArr = src.arr;
   var groups = state.groupLayout;
   var N = groups.length;
   if (N <= 1) { showToast('班が1つ以下では実行できません', 'error'); return null; }
@@ -1186,7 +1280,7 @@ function performGroupCrossShuffle(){
     for (var n = 0; n < gFrom.length; n++) {
       var fromSeat = gFrom[n];
       if (fromSeat === null || fromSeat === undefined) continue;
-      var sid = state.current[fromSeat];
+      var sid = srcArr[fromSeat];
       if (!sid) continue;
       if (fixedSeats[fromSeat]) continue;
       var off = (state.groupOffsets[n] !== undefined) ? state.groupOffsets[n] : 0;
@@ -1217,20 +1311,20 @@ function performGroupCrossShuffle(){
 // GROUP ROTATE SHUFFLE
 // =================================================================
 function performGroupRotateShuffle(){
-  if (!state.current) { showToast('まずは席替えしてください', 'error'); return null; }
+  var src = getSourceSeating();
+  if (!src) { showToast('まずは席を埋めてください', 'error'); return null; }
+  var srcArr = src.arr;
   var groups = state.groupLayout;
   if (!groups.length) { showToast('班が設定されていません', 'error'); return null; }
-  var total = state.rows * state.cols;
-  var out = state.current.slice();
-  var dir = state.groupRotation; // cw or ccw
+  var out = srcArr.slice();
+  var dir = state.groupRotation;
 
   groups.forEach(function(slots){
     var validSlots = slots.filter(function(x){ return x !== null && x !== undefined; });
     if (validSlots.length < 2) return;
-    // Rotate only among non-fixed seats so fixed students stay and no IDs collide
     var freeSeats = validSlots.filter(function(seat){ return !state.fixed[seat]; });
     if (freeSeats.length < 2) return;
-    var ids = freeSeats.map(function(seat){ return state.current[seat]; });
+    var ids = freeSeats.map(function(seat){ return srcArr[seat]; });
     var rotated;
     if (dir === 'cw') rotated = [ids[ids.length-1]].concat(ids.slice(0, ids.length-1));
     else              rotated = ids.slice(1).concat([ids[0]]);
@@ -1240,43 +1334,146 @@ function performGroupRotateShuffle(){
 }
 
 // =================================================================
-// SHUFFLE RUNNERS (with animations)
+// SHUFFLE RUNNERS (with movement animations)
 // =================================================================
+var _shuffleBackup = null;
+
+function _ensureSeatingForShuffle(){
+  // Ensure cur exists with default placement of all students if both boards are empty
+  var src = getSourceSeating();
+  if (src) return;
+  copyCurrentToProposed(false);
+}
+
 function runFullShuffle(){
   if (state.students.length === 0) { showToast('名簿が空です', 'error'); return; }
-  if (!state.current) copyCurrentToProposed(true);
+  _ensureSeatingForShuffle();
+  var src = getSourceSeating(); if (!src) return;
   var result = performFullShuffle();
   if (!result) return;
-  state.proposed = result;
-  save();
-  playAnimation('full', function(){
-    renderAllBoards();
-    if (state.options.confetti) launchConfetti();
-  });
+  doShuffleWithMovement(src, result);
 }
 
 function runGroupCrossShuffle(){
   if (state.groupLayout.length < 2) { showToast('班を2つ以上にして下さい', 'error'); return; }
+  _ensureSeatingForShuffle();
+  var src = getSourceSeating(); if (!src) return;
   var result = performGroupCrossShuffle();
   if (!result) return;
-  state.proposed = result;
-  save();
-  playAnimation('cross', function(){
-    renderAllBoards();
-    if (state.options.confetti) launchConfetti();
-  });
+  doShuffleWithMovement(src, result);
 }
 
 function runGroupRotateShuffle(){
   if (state.groupLayout.length < 1) { showToast('班を設定してください', 'error'); return; }
+  _ensureSeatingForShuffle();
+  var src = getSourceSeating(); if (!src) return;
   var result = performGroupRotateShuffle();
   if (!result) return;
-  state.proposed = result;
-  save();
-  playAnimation('rotate', function(){
+  doShuffleWithMovement(src, result);
+}
+
+// Save backup, set state, kick off the movement animation, then commit final state.
+function doShuffleWithMovement(src, newSeating){
+  _shuffleBackup = { current: state.current ? state.current.slice() : null, proposed: state.proposed ? state.proposed.slice() : null };
+  // After shuffle: source becomes empty, proposed = newSeating (so the desks "move" out of source)
+  // First, snapshot rects from source board (where desks currently are)
+  var sourceBoardId = 'grid-' + src.board;
+  var sourceEls = document.querySelectorAll('#' + sourceBoardId + ' .seat');
+  var fromMap = {}; // sid → {rect, html}
+  src.arr.forEach(function(sid, i){
+    if (!sid || !sourceEls[i]) return;
+    fromMap[sid] = { rect: sourceEls[i].getBoundingClientRect(), html: sourceEls[i].innerHTML };
+  });
+
+  // Apply new state: source becomes empty, proposed becomes the new permutation
+  var emptyArr = []; for (var i = 0; i < state.rows * state.cols; i++) emptyArr.push(null);
+  if (src.board === 'current') state.current = emptyArr;
+  state.proposed = newSeating;
+  renderAllBoards();
+
+  // Animate from old positions to new positions on the proposed board
+  if (!state.options.showMovement || state.options.animSpeed === 'skip') {
+    save();
+    if (state.options.confetti) launchConfetti();
+    return;
+  }
+  playMovementAnimation(fromMap, function(){
+    save();
     renderAllBoards();
     if (state.options.confetti) launchConfetti();
+    if (state.options.sound) playFanfare();
   });
+}
+
+function playMovementAnimation(fromMap, onDone){
+  var sf = (state.options.animSpeed === 'fast') ? 0.55 : 1.0;
+  var DUR = 900 * sf;
+  var STAGGER = 28 * sf;
+  animSkipFlag = false;
+  animTimers = [];
+
+  // Get target rects from the now-rendered proposed grid
+  var propEls = document.querySelectorAll('#grid-proposed .seat');
+  var toMap = {};
+  state.proposed.forEach(function(sid, i){
+    if (!sid || !propEls[i]) return;
+    toMap[sid] = propEls[i].getBoundingClientRect();
+  });
+
+  // Hide proposed seats during animation (they will be revealed when clones land)
+  propEls.forEach(function(el, i){ if (state.proposed[i]) el.style.opacity = 0; });
+
+  // Show overlay with title
+  var overlay = document.getElementById('anim-overlay');
+  var title = document.getElementById('anim-title');
+  var stage = document.getElementById('anim-stage');
+  stage.innerHTML = '';
+  title.textContent = '🪑 みんな移動中…';
+  overlay.classList.add('show');
+  overlay.style.background = 'rgba(58,71,98,.18)'; // softer veil
+  overlay.style.backdropFilter = 'blur(0px)';
+  if (state.options.sound) playWhoosh();
+
+  // Create clones
+  var clones = [];
+  Object.keys(fromMap).forEach(function(sid){
+    var to = toMap[sid]; if (!to) return;
+    var f = fromMap[sid];
+    var clone = document.createElement('div');
+    clone.className = 'seat fly-clone';
+    clone.innerHTML = f.html;
+    clone.style.position = 'fixed';
+    clone.style.left = f.rect.left + 'px';
+    clone.style.top  = f.rect.top  + 'px';
+    clone.style.width  = f.rect.width  + 'px';
+    clone.style.height = f.rect.height + 'px';
+    clone.style.zIndex = 401;
+    clone.style.margin = 0;
+    clone.style.transition = 'transform ' + (DUR/1000) + 's cubic-bezier(.55,.05,.25,1), opacity .25s';
+    clone.style.pointerEvents = 'none';
+    document.body.appendChild(clone);
+    clones.push({ clone: clone, dx: to.left - f.rect.left, dy: to.top - f.rect.top });
+  });
+
+  // Trigger the move with stagger
+  setTimer(function(){
+    clones.forEach(function(c, i){
+      setTimer(function(){
+        c.clone.style.transform = 'translate(' + c.dx + 'px, ' + c.dy + 'px)';
+      }, i * STAGGER);
+    });
+  }, 30);
+
+  // Cleanup after the longest animation
+  var totalDur = DUR + clones.length * STAGGER + 100;
+  setTimer(function(){
+    clones.forEach(function(c){ c.clone.remove(); });
+    propEls.forEach(function(el){ el.style.opacity = ''; });
+    overlay.classList.remove('show');
+    overlay.style.background = '';
+    overlay.style.backdropFilter = '';
+    onDone();
+  }, totalDur);
 }
 
 function toggleRotateDir(){
@@ -1287,70 +1484,8 @@ function toggleRotateDir(){
 }
 
 // =================================================================
-// ANIMATIONS
+// ANIMATION HELPERS
 // =================================================================
-function playAnimation(kind, onDone){
-  var speed = state.options.animSpeed;
-  if (speed === 'skip') { onDone(); return; }
-  animSkipFlag = false;
-  var overlay = document.getElementById('anim-overlay');
-  var title   = document.getElementById('anim-title');
-  var stage   = document.getElementById('anim-stage');
-  overlay.classList.add('show');
-  stage.innerHTML = '';
-  var sf = (speed === 'fast') ? 0.5 : 1.0;
-
-  if (kind === 'full') {
-    title.textContent = '🎰 ガラポン抽選中…';
-    stage.innerHTML =
-      '<div class="gachapon-stage">' +
-        '<div class="gachapon-base"></div>' +
-        '<div class="gachapon-body"></div>' +
-        '<div class="gachapon-orb" style="left:30%; top:30%"></div>' +
-        '<div class="gachapon-orb" style="left:60%; top:50%; animation-direction:reverse"></div>' +
-        '<div class="gachapon-orb" style="left:40%; top:60%"></div>' +
-      '</div>';
-    if (state.options.sound) playDrumRoll(1.4 * sf);
-    setTimer(function(){ title.textContent = '✨ 決定！'; if (state.options.sound) playFanfare(); }, 1400 * sf);
-    setTimer(function(){
-      overlay.classList.remove('show');
-      onDone();
-    }, 2000 * sf);
-
-  } else if (kind === 'cross') {
-    title.textContent = '↔️ 班の壁をこえて…';
-    var size = 280;
-    var svg = '<svg viewBox="0 0 200 200" width="' + size + '" height="' + size + '" style="filter:drop-shadow(0 4px 12px rgba(0,0,0,.3))">';
-    var cx = 100, cy = 100, R = 80;
-    var colors = ['#ff77a8','#5fd47a','#4ea5ff','#ffd83d'];
-    for (var i = 0; i < 4; i++) {
-      var a1 = (i / 4) * Math.PI * 2;
-      var a2 = ((i + 2) / 4) * Math.PI * 2;
-      var x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
-      var x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
-      svg += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 +
-             '" stroke="' + colors[i] + '" stroke-width="6" stroke-linecap="round" ' +
-             'stroke-dasharray="60" style="animation:arrowDash ' + (1.2 * sf) + 's ease-in-out forwards"/>';
-    }
-    svg += '<circle cx="100" cy="100" r="20" fill="#ffd83d" stroke="#23314f" stroke-width="4"/></svg>';
-    stage.innerHTML = svg;
-    if (state.options.sound) playWhoosh();
-    setTimer(function(){ overlay.classList.remove('show'); onDone(); }, 1400 * sf);
-
-  } else if (kind === 'rotate') {
-    title.textContent = '🔄 班の中でぐるりと…';
-    stage.innerHTML =
-      '<div style="position:relative; width:240px; height:240px; animation:carousel ' + (1.4 * sf) + 's cubic-bezier(.4,.2,.2,1) forwards">' +
-        '<div style="position:absolute; top:10px; left:50%; transform:translateX(-50%); width:60px; height:60px; background:#ff77a8; border:4px solid #23314f; border-radius:14px; box-shadow:0 4px 0 #23314f; display:flex; align-items:center; justify-content:center; font-size:28px">🪑</div>' +
-        '<div style="position:absolute; right:10px; top:50%; transform:translateY(-50%); width:60px; height:60px; background:#5fd47a; border:4px solid #23314f; border-radius:14px; box-shadow:0 4px 0 #23314f; display:flex; align-items:center; justify-content:center; font-size:28px">🪑</div>' +
-        '<div style="position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:60px; height:60px; background:#4ea5ff; border:4px solid #23314f; border-radius:14px; box-shadow:0 4px 0 #23314f; display:flex; align-items:center; justify-content:center; font-size:28px">🪑</div>' +
-        '<div style="position:absolute; left:10px; top:50%; transform:translateY(-50%); width:60px; height:60px; background:#ffd83d; border:4px solid #23314f; border-radius:14px; box-shadow:0 4px 0 #23314f; display:flex; align-items:center; justify-content:center; font-size:28px">🪑</div>' +
-      '</div>';
-    if (state.options.sound) playWhoosh();
-    setTimer(function(){ overlay.classList.remove('show'); onDone(); }, 1500 * sf);
-  }
-}
-
 function setTimer(fn, ms){
   var t = setTimeout(function(){
     if (!animSkipFlag) fn();
@@ -1536,43 +1671,46 @@ function makeBoardSeat(idx, seating, which){
   return el;
 }
 
-// Handle drop: from → to.
-// Within-proposed drag: swap proposed[fromIdx] and proposed[toIdx].
-// Cross-board (current → proposed): place X at proposed[toIdx]; also remove X from any
-// other position in proposed (swap in-place). The current board is read-only reference.
-// If user drags FROM proposed TO current, we treat it as: undo this student in proposed
-// (clear them from proposed[fromIdx]) and they remain in current. No effect on current.
+// Drag semantics ("desk literally moves"):
+// - current→proposed : student leaves current[fromIdx] (becomes empty) and appears at proposed[toIdx].
+//                      If proposed[toIdx] was occupied by Y, Y is bumped back to current[fromIdx]
+//                      (swap across boards). Invariant: current ⊔ proposed contains every student exactly once.
+// - proposed→proposed: swap two seats on proposed.
+// - current→current  : swap two seats on current (rearrange the source).
+// - proposed→current : student returns from proposed to current. If current[toIdx] was occupied,
+//                      that student gets bumped to proposed[fromIdx] (swap).
 function handleDrop(fromBoard, fromIdx, toBoard, toIdx){
   if (fromBoard === toBoard && fromIdx === toIdx) return;
   if (state.disabled.indexOf(toIdx) !== -1) return;
 
+  var cur = (state.current  || []).slice();
+  var prop = (state.proposed || []).slice();
+  var total = state.rows * state.cols;
+  while (cur .length < total) cur .push(null);
+  while (prop.length < total) prop.push(null);
+
+  function swapInArr(arr, a, b){ var x = arr[a]; arr[a] = arr[b] || null; arr[b] = x || null; }
+
   if (fromBoard === 'proposed' && toBoard === 'proposed') {
-    // Pure swap on proposed
-    var p = state.proposed.slice();
-    var a = p[fromIdx], b = p[toIdx];
-    p[fromIdx] = b || null;
-    p[toIdx] = a || null;
-    state.proposed = p;
-  } else if (fromBoard === 'current' && toBoard === 'proposed') {
-    // Place X at proposed[toIdx]; ensure X uniqueness in proposed by swapping
-    var sid = state.current[fromIdx];
-    if (!sid) return;
-    var p2 = state.proposed.slice();
-    var prevPos = p2.indexOf(sid);
-    var prevAtTo = p2[toIdx];
-    if (prevPos === toIdx) return;
-    p2[toIdx] = sid;
-    if (prevPos !== -1) p2[prevPos] = prevAtTo || null; // swap
-    state.proposed = p2;
-  } else if (fromBoard === 'proposed' && toBoard === 'current') {
-    // Drop from proposed onto current = "remove from proposed". Current is read-only.
-    var p3 = state.proposed.slice();
-    p3[fromIdx] = null;
-    state.proposed = p3;
+    if (!prop[fromIdx]) return;
+    swapInArr(prop, fromIdx, toIdx);
   } else if (fromBoard === 'current' && toBoard === 'current') {
-    // Current is read-only, ignore
-    return;
+    if (!cur[fromIdx]) return;
+    swapInArr(cur, fromIdx, toIdx);
+  } else if (fromBoard === 'current' && toBoard === 'proposed') {
+    var sid = cur[fromIdx]; if (!sid) return;
+    // Move sid from current to proposed[toIdx], bumping the previous occupant back to current[fromIdx]
+    var bumped = prop[toIdx] || null;
+    prop[toIdx]  = sid;
+    cur [fromIdx] = bumped;
+  } else if (fromBoard === 'proposed' && toBoard === 'current') {
+    var sid2 = prop[fromIdx]; if (!sid2) return;
+    var bumped2 = cur[toIdx] || null;
+    cur [toIdx]   = sid2;
+    prop[fromIdx] = bumped2;
   }
+  state.current  = cur;
+  state.proposed = prop;
   save();
   renderAllBoards();
 }
@@ -1625,28 +1763,56 @@ function setupTouchDrag(el, board, idx){
 // =================================================================
 // COPY / CONFIRM / CLEAR
 // =================================================================
+function emptySeating(){
+  var total = state.rows * state.cols;
+  var arr = []; for (var i = 0; i < total; i++) arr.push(null);
+  return arr;
+}
+// Initialize current with default placement of all students if empty.
+// Proposed defaults to empty so the user can drag/shuffle into it.
 function copyCurrentToProposed(force){
-  if (!state.current) {
-    var total = state.rows * state.cols;
-    state.current = []; for (var i = 0; i < total; i++) state.current.push(null);
-    // place all students in order if empty
+  var total = state.rows * state.cols;
+  if (!state.current || state.current.length !== total) {
+    state.current = emptySeating();
     var idx = 0;
     state.students.forEach(function(s){
       while (idx < total && state.disabled.indexOf(idx) !== -1) idx++;
       if (idx < total) { state.current[idx] = s.id; idx++; }
     });
   }
-  if (!state.proposed || force) state.proposed = state.current.slice();
+  if (!state.proposed || state.proposed.length !== total || force) {
+    state.proposed = emptySeating();
+  }
   save();
 }
 function clearProposed(){
-  var total = state.rows * state.cols;
-  state.proposed = []; for (var i = 0; i < total; i++) state.proposed.push(null);
+  state.proposed = emptySeating();
   save(); renderAllBoards();
 }
+function resetCurrent(){
+  // Restore current from backup (last shuffle) or from latest history entry; clear proposed
+  if (_shuffleBackup) {
+    state.current = _shuffleBackup.current ? _shuffleBackup.current.slice() : emptySeating();
+    state.proposed = emptySeating();
+    _shuffleBackup = null;
+  } else if (state.history && state.history.length) {
+    state.current = state.history[0].seating.slice();
+    state.proposed = emptySeating();
+  } else {
+    state.current = null;
+    state.proposed = emptySeating();
+    copyCurrentToProposed(false);
+  }
+  save(); renderAllBoards();
+  showToast('やり直しました');
+}
 function confirmSeating(){
-  if (!state.proposed) { showToast('まず席を作ってください', 'error'); return; }
+  if (!state.proposed || !state.proposed.some(function(s){ return !!s; })) {
+    showToast('まず席を作ってください', 'error'); return;
+  }
   state.current = state.proposed.slice();
+  state.proposed = emptySeating();
+  _shuffleBackup = null;
   state.history = [{
     id: uid(),
     date: new Date().toLocaleString('ja-JP'),
@@ -1658,7 +1824,7 @@ function confirmSeating(){
   save(); renderAllBoards();
   if (state.options.confetti) launchConfetti();
   if (state.options.sound) playFanfare();
-  showToast('🎉 新しい席に決まりました！');
+  showToast('新しい席に決まりました');
 }
 
 // =================================================================
@@ -1736,9 +1902,20 @@ function importFromPaste(){
   if (!parsed.length) { showToast('有効な名前が見つかりませんでした', 'error'); return; }
   showImportPreview(parsed, 'paste');
 }
+function importFromGsheet(){
+  var raw = document.getElementById('gsheet-area').value.trim();
+  if (!raw) { showToast('テキストを貼り付けてください', 'error'); return; }
+  var parsed = raw.split(/\r?\n/).map(function(l){ return l.trim(); }).filter(function(l){ return l.length > 0; })
+    .map(parseLine).filter(function(p){ return p && p.name; });
+  if (!parsed.length) { showToast('有効な名前が見つかりませんでした', 'error'); return; }
+  showImportPreview(parsed, 'gsheet');
+}
 function showImportPreview(parsed, source){
   pendingImport = parsed;
-  var container = document.getElementById(source === 'paste' ? 'paste-preview' : 'excel-preview');
+  var containerId = source === 'paste' ? 'paste-preview'
+                   : source === 'gsheet' ? 'gsheet-preview'
+                   : 'excel-preview';
+  var container = document.getElementById(containerId);
   var m = parsed.filter(function(p){ return p.gender === 'male'; }).length;
   var f = parsed.filter(function(p){ return p.gender === 'female'; }).length;
   var rowsHtml = parsed.map(function(p, i){
@@ -1793,6 +1970,9 @@ function confirmImport(src){
   if (src === 'paste') {
     document.getElementById('paste-area').value = '';
     document.getElementById('paste-preview').style.display = 'none';
+  } else if (src === 'gsheet') {
+    document.getElementById('gsheet-area').value = '';
+    document.getElementById('gsheet-preview').style.display = 'none';
   } else {
     document.getElementById('excel-preview').style.display = 'none';
     document.getElementById('excel-file').value = '';
@@ -1951,9 +2131,27 @@ function resetAll(){
 // =================================================================
 function toggleOrient(){
   state.boardOrient = (state.boardOrient === 'vertical') ? 'horizontal' : 'vertical';
-  document.getElementById('dual-board').dataset.orient = state.boardOrient;
-  document.getElementById('divider').textContent = (state.boardOrient === 'vertical') ? '↓ ドラッグして机を動かそう ↓' : '→ ドラッグして机を動かそう →';
+  applyOrient();
   save();
+}
+function applyOrient(){
+  document.getElementById('dual-board').dataset.orient = state.boardOrient;
+  document.getElementById('divider').textContent = (state.boardOrient === 'vertical') ? 'ドラッグして机を動かそう' : 'ドラッグして机を動かそう →';
+}
+
+function setBoardSide(side){
+  state.boardSide = side;
+  applyBoardSide();
+  save();
+}
+function applyBoardSide(){
+  ['board-current','board-proposed'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.dataset.side = state.boardSide;
+  });
+  document.querySelectorAll('#bb-side-sel button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.side === state.boardSide);
+  });
 }
 
 // =================================================================
@@ -1976,11 +2174,15 @@ function bindEvents(){
       showToast('班人数を' + ns + '人に変更');
     }
   });
+  // Blackboard side selector
+  document.querySelectorAll('#bb-side-sel button').forEach(function(b){
+    b.addEventListener('click', function(){ setBoardSide(b.dataset.side); });
+  });
   // Excel zone wiring
   var zone = document.getElementById('excel-zone');
-  zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.style.background = '#dffacf'; });
-  zone.addEventListener('dragleave', function(){ zone.style.background = '#f3ffec'; });
-  zone.addEventListener('drop', function(e){ e.preventDefault(); zone.style.background = '#f3ffec'; var f = e.dataTransfer.files[0]; if (f) handleExcelFile(f); });
+  zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.style.borderColor = 'var(--purple)'; });
+  zone.addEventListener('dragleave', function(){ zone.style.borderColor = ''; });
+  zone.addEventListener('drop', function(e){ e.preventDefault(); zone.style.borderColor = ''; var f = e.dataTransfer.files[0]; if (f) handleExcelFile(f); });
   document.getElementById('excel-file').addEventListener('change', function(e){ if (e.target.files[0]) handleExcelFile(e.target.files[0]); });
 }
 
@@ -1990,8 +2192,8 @@ function init(){
   document.getElementById('rows').value = state.rows;
   document.getElementById('cols').value = state.cols;
   document.getElementById('group-size').value = state.groupSize;
-  document.getElementById('dual-board').dataset.orient = state.boardOrient;
-  document.getElementById('divider').textContent = (state.boardOrient === 'vertical') ? '↓ ドラッグして机を動かそう ↓' : '→ ドラッグして机を動かそう →';
+  applyOrient();
+  applyBoardSide();
   document.getElementById('dir-toggle').textContent = (state.groupRotation === 'cw') ? '↻' : '↺';
   if (!state.groupLayout || !state.groupLayout.length) autoLayoutGroups();
   bindEvents();
