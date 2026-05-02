@@ -1,0 +1,14 @@
+# Local
+.claude/settings.local.json
+.claude/launch.json
+
+# Editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Temp
+_*.html
+index.html
