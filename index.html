@@ -101,6 +101,19 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
 #panel-seating[data-mode="manual"] .auto-only{display:none}
 #panel-seating[data-mode="auto"] .manual-only{display:none}
 
+/* Font size bar in seating panel */
+.font-bar{
+  display:flex; align-items:center; gap:8px;
+  padding:8px 12px; border:1px solid var(--line); border-radius:10px;
+  background:#fff;
+}
+.font-step{
+  width:32px; height:32px; border:1px solid var(--line); border-radius:8px;
+  background:#fff; cursor:pointer; font-family:inherit; font-weight:700; font-size:13px;
+  color:var(--ink);
+}
+.font-step:hover{border-color:var(--purple)}
+
 /* Roster import tabs */
 .import-tabs{display:flex; gap:4px; margin-bottom:12px; padding:3px; background:#f0eee7; border-radius:10px}
 .import-tabs button{
@@ -390,25 +403,35 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 }
 .chip.active{background:linear-gradient(135deg,#ffd83d,#ff9f43)}
 
-/* Print */
+/* Print: A4 横向き、ページいっぱい */
+@page { size: A4 landscape; margin: 8mm; }
 @media print {
+  html,body{height:auto !important; width:auto !important; margin:0 !important; padding:0 !important}
   body{background:#fff !important; color:#000}
   body > *:not(#print-area){display:none !important}
-  #print-area{display:block !important; padding:8mm}
-  #print-area h1{font-size:18pt; font-weight:700; margin-bottom:6mm; text-align:center}
-  #print-area .print-meta{font-size:10pt; color:#444; text-align:center; margin-bottom:8mm}
-  #print-area .print-grid{display:grid; gap:3mm}
-  #print-area .print-seat{
-    border:1px solid #888; border-radius:3mm; padding:3mm 1mm; min-height:18mm;
-    display:flex; align-items:center; justify-content:center; text-align:center;
-    font-size:10pt; word-break:break-all;
+  #print-area{
+    display:flex !important; flex-direction:column;
+    width:100%; min-height:100vh; padding:0; margin:0;
+    box-sizing:border-box;
   }
-  #print-area .print-seat.disabled{background:#eee; color:#aaa}
-  #print-area .print-seat.empty{border-style:dashed; color:#bbb}
+  #print-area h1{font-size:20pt; font-weight:700; margin:0 0 2mm; text-align:center}
+  #print-area .print-meta{font-size:10pt; color:#444; text-align:center; margin-bottom:4mm}
   #print-area .print-blackboard{
-    text-align:center; border:1px solid #444; padding:2mm; margin:0 auto 5mm;
-    width:60mm; font-size:10pt; letter-spacing:2pt;
+    text-align:center; border:1px solid #444; padding:2mm 4mm; margin:0 auto 4mm;
+    min-width:80mm; font-size:11pt; letter-spacing:3pt;
+    background:#222; color:#fff8d2; border-radius:1mm;
   }
+  #print-area .print-grid{
+    display:grid; gap:2mm; flex:1; width:100%;
+  }
+  #print-area .print-seat{
+    border:1.2pt solid #555; border-radius:2mm; padding:2mm 1mm;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    font-size:14pt; font-weight:700; word-break:break-all; line-height:1.2;
+    background:#fff;
+  }
+  #print-area .print-seat.disabled{background:#eee; color:#aaa; border-style:dotted}
+  #print-area .print-seat.empty{border-style:dashed; color:#ccc}
 }
 #print-area{display:none}
 
@@ -616,6 +639,14 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       <button class="big-btn full" onclick="runFullShuffle()">全シャッフル</button>
     </div>
 
+    <div class="font-bar">
+      <span style="font-size:12px; color:var(--soft); font-weight:600">文字サイズ</span>
+      <button class="font-step" onclick="bumpFontSize(-10)">A−</button>
+      <input type="range" id="opt-fontsize-2" min="80" max="160" step="5" value="100" style="flex:1; min-width:120px">
+      <button class="font-step" onclick="bumpFontSize(10)">A＋</button>
+      <span id="opt-fontsize-2-val" style="font-weight:700; min-width:40px; text-align:right; font-size:12px">100%</span>
+    </div>
+
     <div class="dual-board" id="dual-board" data-orient="vertical">
       <div class="board board--current" id="board-current" data-side="top">
         <div class="board-label">いまの席</div>
@@ -779,6 +810,20 @@ function applyFontSize(pct){
   var p = pct || 100;
   document.body.style.fontSize = (14 * p / 100).toFixed(1) + 'px';
 }
+// Set + sync all sliders + persist
+function setFontSize(pct){
+  var v = clamp(parseInt(pct) || 100, 80, 160);
+  state.options.fontSize = v;
+  applyFontSize(v);
+  ['opt-fontsize','opt-fontsize-2'].forEach(function(id){
+    var sl = document.getElementById(id);
+    if (sl && parseInt(sl.value) !== v) sl.value = v;
+    var lab = document.getElementById(id + '-val');
+    if (lab) lab.textContent = v + '%';
+  });
+  save();
+}
+function bumpFontSize(delta){ setFontSize((state.options.fontSize || 100) + delta); }
 
 var pendingImport = null;
 var animSkipFlag = false;
@@ -1006,8 +1051,6 @@ function makeLayoutSeat(idx){
   } else if (fixedS) {
     var c = genderColor(fixedS.gender);
     inner += '<span class="nm" style="color:' + c + '">' + fixedS.name + '</span>';
-  } else {
-    inner += '<span class="seat-num">' + (idx + 1) + '</span>';
   }
   el.className = cls;
   el.innerHTML = inner;
@@ -1724,8 +1767,6 @@ function makeBoardSeat(idx, seating, which){
   } else if (s) {
     var c = genderColor(s.gender);
     inner += '<span class="nm" style="color:' + c + '">' + s.name + '</span>';
-  } else {
-    inner += '<span class="seat-num">' + (idx + 1) + '</span>';
   }
   el.innerHTML = inner;
 
@@ -1947,7 +1988,6 @@ function buildHistoryGrid(r){
       var c = genderColor(s.gender);
       inner = '<span class="nm" style="color:' + c + '">' + s.name + '</span>';
     }
-    else inner = '<span class="seat-num">' + (i+1) + '</span>';
     html += '<div class="' + cls + '">' + inner + '</div>';
   }
   return html + '</div>';
@@ -2237,7 +2277,7 @@ function printSeating(){
   var bbTop = (state.boardSide === 'top'  || state.boardSide === 'left' || !state.boardSide);
   var bbBottom = (state.boardSide === 'bottom');
   if (bbTop) html += '<div class="print-blackboard">黒板</div>';
-  html += '<div class="print-grid" style="grid-template-columns:repeat(' + state.cols + ',1fr)">';
+  html += '<div class="print-grid" style="grid-template-columns:repeat(' + state.cols + ',1fr); grid-template-rows:repeat(' + state.rows + ',1fr)">';
   var total = state.rows * state.cols;
   for (var i = 0; i < total; i++) {
     var sid = seating[i];
@@ -2330,18 +2370,17 @@ function bindEvents(){
       applyFont(state.options.font); save();
     });
   }
-  var sizeIn = document.getElementById('opt-fontsize');
-  var sizeVal = document.getElementById('opt-fontsize-val');
-  if (sizeIn) {
-    sizeIn.value = state.options.fontSize || 100;
-    if (sizeVal) sizeVal.textContent = (state.options.fontSize || 100) + '%';
-    sizeIn.addEventListener('input', function(){
-      var v = parseInt(sizeIn.value) || 100;
-      state.options.fontSize = v;
-      if (sizeVal) sizeVal.textContent = v + '%';
-      applyFontSize(v); save();
+  // Font size sliders (initial setup tab + seating panel) — kept in sync
+  ['opt-fontsize','opt-fontsize-2'].forEach(function(id){
+    var sl = document.getElementById(id); if (!sl) return;
+    var lab = document.getElementById(id + '-val');
+    sl.value = state.options.fontSize || 100;
+    if (lab) lab.textContent = (state.options.fontSize || 100) + '%';
+    sl.addEventListener('input', function(){
+      var v = parseInt(sl.value) || 100;
+      setFontSize(v);
     });
-  }
+  });
   // Excel zone wiring
   var zone = document.getElementById('excel-zone');
   zone.addEventListener('dragover', function(e){ e.preventDefault(); zone.style.borderColor = 'var(--purple)'; });
