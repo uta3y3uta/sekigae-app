@@ -216,6 +216,18 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
 .dual-board[data-orient="horizontal"] .divider{
   writing-mode:vertical-rl; text-orientation:mixed; padding:10px 6px;
 }
+/* 横（左右）2分割のとき：全シャッフルボタンを縦長に */
+.dual-board[data-orient="horizontal"] .dual-divider{
+  display:flex; height:100%;
+}
+.dual-board[data-orient="horizontal"] .divider-action{
+  flex:1; padding:8px 4px;
+}
+.dual-board[data-orient="horizontal"] .divider-action .big-btn{
+  writing-mode:vertical-rl; text-orientation:mixed;
+  min-width:0; min-height:240px; height:100%; padding:24px 14px;
+  letter-spacing:2px;
+}
 .seat-grid{
   flex:1; display:grid; gap:6px; padding:4px; min-height:120px;
 }
@@ -1477,6 +1489,25 @@ function performGroupRotateShuffle(){
 // SHUFFLE RUNNERS (with movement animations)
 // =================================================================
 var _shuffleBackup = null;
+var _baseline = null;  // 「クリア」で戻したい現在/新席のスナップショット
+
+function saveBaseline(){
+  _baseline = {
+    current:  state.current  ? state.current.slice()  : null,
+    proposed: state.proposed ? state.proposed.slice() : null
+  };
+}
+function restoreFromBaseline(){
+  if (!_baseline) {
+    // ベースライン未保存の場合は標準配置を再構築
+    state.current = null;
+    state.proposed = null;
+    copyCurrentToProposed(true);
+    return;
+  }
+  state.current  = _baseline.current  ? _baseline.current.slice()  : emptySeating();
+  state.proposed = _baseline.proposed ? _baseline.proposed.slice() : emptySeating();
+}
 
 function _ensureSeatingForShuffle(){
   // Ensure cur exists with default placement of all students if both boards are empty
@@ -1529,6 +1560,7 @@ function doShuffleWithMovement(src, newSeating){
   var emptyArr = []; for (var i = 0; i < state.rows * state.cols; i++) emptyArr.push(null);
   if (src.board === 'current') state.current = emptyArr;
   state.proposed = newSeating;
+  saveBaseline();  // シャッフル直後の状態を「元の席」にする
   renderAllBoards();
 
   // Animate from old positions to new positions on the proposed board
@@ -1901,6 +1933,7 @@ function emptySeating(){
 // Proposed defaults to empty so the user can drag/shuffle into it.
 function copyCurrentToProposed(force){
   var total = state.rows * state.cols;
+  var initialized = false;
   if (!state.current || state.current.length !== total) {
     state.current = emptySeating();
     var idx = 0;
@@ -1908,15 +1941,20 @@ function copyCurrentToProposed(force){
       while (idx < total && state.disabled.indexOf(idx) !== -1) idx++;
       if (idx < total) { state.current[idx] = s.id; idx++; }
     });
+    initialized = true;
   }
   if (!state.proposed || state.proposed.length !== total || force) {
     state.proposed = emptySeating();
+    initialized = true;
   }
+  if (initialized || !_baseline) saveBaseline();
   save();
 }
 function clearProposed(){
-  state.proposed = emptySeating();
+  // ベースライン（手動操作前の席順）に戻す。手動で動かしたカードが元の席に戻る。
+  restoreFromBaseline();
   save(); renderAllBoards();
+  showToast('元の席に戻しました');
 }
 function resetCurrent(){
   // Restore current from backup (last shuffle) or from latest history entry; clear proposed
@@ -1942,6 +1980,7 @@ function confirmSeating(){
   state.current = state.proposed.slice();
   state.proposed = emptySeating();
   _shuffleBackup = null;
+  saveBaseline();
   state.history = [{
     id: uid(),
     date: new Date().toLocaleString('ja-JP'),
@@ -2107,6 +2146,7 @@ function restoreHistory(id){
   state.current = r.seating.slice();
   state.proposed = emptySeating();
   _shuffleBackup = null;
+  saveBaseline();
   // Reflect new dims in 初期設定 inputs
   document.getElementById('rows').value = r.rows;
   document.getElementById('cols').value = r.cols;
