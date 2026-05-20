@@ -2109,14 +2109,29 @@ function buildHistoryGrid(r){
 function restoreHistory(id){
   var r = state.history.find(function(h){ return h.id === id; });
   if (!r) return;
-  state.current = r.seating.slice();
-  state.proposed = r.seating.slice();
   state.rows = r.rows; state.cols = r.cols;
   state.disabled = (r.disabled || []).slice();
+  state.current = r.seating.slice();
+  state.proposed = emptySeating();
+  _shuffleBackup = null;
+  // Reflect new dims in 初期設定 inputs
   document.getElementById('rows').value = r.rows;
   document.getElementById('cols').value = r.cols;
   autoLayoutGroups();
-  save(); switchTab('seating');
+  save();
+  // 現在開いているタブが手動／自動／履歴のどれであっても、新しい現席をすぐ反映
+  var activeTabBtn = document.querySelector('.tab.active');
+  var activeTab = activeTabBtn ? activeTabBtn.dataset.tab : 'manual';
+  if (activeTab === 'history') {
+    // 履歴タブの場合は手動席替えに切り替えて確認しやすく
+    switchTab('manual');
+  } else if (activeTab === 'manual' || activeTab === 'auto') {
+    // 既に席替えタブにいる場合はその場で再描画
+    renderAllBoards();
+  } else {
+    // 初期設定にいる場合はそのまま再描画（layout-grid に反映）
+    renderLayoutGrid();
+  }
   showToast('履歴から復元しました');
 }
 
