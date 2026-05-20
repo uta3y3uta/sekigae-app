@@ -130,8 +130,8 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
   border:1px solid var(--line); border-radius:99px; font-size:13px; font-weight:600;
   background:#fff;
 }
-.tag.male{background:#eef4f9; border-color:#d0dde6}
-.tag.female{background:#f7eef2; border-color:#e6d0db}
+.tag.male{background:#cfe1f2; border-color:#9cc0db}
+.tag.female{background:#f2cdd9; border-color:#dfa0b6}
 .tag .avatar{font-size:16px}
 .tag-x{border:none; background:none; color:#b04848; font-size:16px; cursor:pointer; line-height:1; opacity:.6}
 .tag-x:hover{opacity:1}
@@ -209,6 +209,10 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
   font-size:13px; letter-spacing:1px;
   background:#fff; border:1px dashed var(--line); border-radius:10px;
 }
+.divider-action{
+  display:flex; align-items:center; justify-content:center; padding:4px 8px;
+}
+.divider-action .big-btn{ font-size:18px; padding:14px 24px; min-width:240px }
 .dual-board[data-orient="horizontal"] .divider{
   writing-mode:vertical-rl; text-orientation:mixed; padding:10px 6px;
 }
@@ -254,6 +258,8 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
 .seat.drop-hi{box-shadow:0 0 0 3px rgba(168,157,196,.4); border-color:var(--purple); background:#f6f3fb}
 .seat.cbm{background:#eef4f9}
 .seat.cbf{background:#f7eef2}
+.seat.gend-male{background:#cfe1f2; border-color:#9cc0db}
+.seat.gend-female{background:#f2cdd9; border-color:#dfa0b6}
 .seat .avatar{font-size:calc(20px * var(--fs, 1)); line-height:1; margin-bottom:2px}
 .seat .nm{font-size:calc(13px * var(--fs, 1)); line-height:1.2; text-align:center; word-break:break-all; max-width:100%}
 .seat .gb{
@@ -311,9 +317,22 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 
 /* History */
 .history-card{
-  background:#fff; border:3px solid var(--ink); border-radius:14px; padding:12px;
-  box-shadow:0 4px 0 var(--ink); margin-bottom:10px;
+  background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px;
+  box-shadow:0 1px 3px rgba(58,71,98,.06); margin-bottom:10px;
 }
+.export-menu-wrap{position:relative}
+.export-menu{
+  position:absolute; right:0; top:calc(100% + 4px); z-index:60;
+  background:#fff; border:1px solid var(--line); border-radius:10px;
+  box-shadow:0 4px 12px rgba(58,71,98,.12);
+  display:flex; flex-direction:column; min-width:120px; overflow:hidden;
+}
+.export-menu button{
+  border:none; background:transparent; padding:9px 14px; cursor:pointer;
+  font-family:inherit; font-weight:600; font-size:13px; color:var(--ink);
+  text-align:left;
+}
+.export-menu button:hover{background:#f3f0f9}
 .history-grid{display:grid; gap:3px}
 .history-grid .seat{min-height:30px; border-width:2px; box-shadow:0 2px 0 var(--ink)}
 .history-grid .seat .nm{font-size:9px}
@@ -470,21 +489,15 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 
     <div class="card">
       <h2 id="roster-title"><span class="badge-num">①</span> データ取込</h2>
-      <p style="font-size:12px; color:var(--soft); margin:-4px 0 12px">取り込み元を選んで名簿を読み込みます。</p>
 
       <div class="import-tabs">
-        <button id="imp-excel"  class="active" onclick="setImportTab('excel')">📊 Excel</button>
-        <button id="imp-gsheet"              onclick="setImportTab('gsheet')">📑 Googleスプレッドシート</button>
-        <button id="imp-paste"               onclick="setImportTab('paste')">📋 入力（コピー&ペースト）</button>
+        <button id="imp-paste"  class="active" onclick="setImportTab('paste')">📋 コピペから</button>
+        <button id="imp-excel"               onclick="setImportTab('excel')">📊 Excelから</button>
+        <button id="imp-gsheet"              onclick="setImportTab('gsheet')">📑 Google スプレッドシートから</button>
       </div>
 
-      <div id="imp-body-paste" class="import-body" style="display:none">
-        <div style="background:#f7f6f1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:12px; line-height:1.7; margin-bottom:10px; color:var(--soft)">
-          1行に1人ずつ入力／貼り付け。<br>
-          名前のみ → <code style="background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)">田中 太郎</code><br>
-          名前＋性別 → <code style="background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)">田中 太郎 男</code>／<code style="background:#fff; padding:1px 5px; border-radius:4px; border:1px solid var(--line)">佐藤 花子 女</code>
-        </div>
-        <textarea id="paste-area" placeholder="田中 太郎 男&#10;佐藤 花子 女&#10;鈴木 一郎" style="width:100%; height:140px; resize:vertical"></textarea>
+      <div id="imp-body-paste" class="import-body">
+        <textarea id="paste-area" placeholder="田中 太郎 男&#10;佐藤 花子 女&#10;鈴木 一郎" style="width:100%; height:160px; resize:vertical"></textarea>
         <div class="row" style="margin-top:8px">
           <label class="toggle"><input type="checkbox" id="paste-replace"> 既存を上書き</label>
           <div style="flex:1"></div>
@@ -495,24 +508,25 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       </div>
 
       <div id="imp-body-gsheet" class="import-body" style="display:none">
-        <div style="background:#f7f6f1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:12px; line-height:1.7; margin-bottom:10px; color:var(--soft)">
-          Googleスプレッドシートで A列＝名前、B列＝性別 のセルを選択してコピー（Ctrl+C / ⌘+C）→ 下に貼り付け。<br>
-          タブ区切りのまま貼り付けて OK です。
+        <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「公開」または「リンクを知っている全員」になっている Google スプレッドシートの URL を貼り付けてください。A 列＝名前、B 列＝性別（任意）。</p>
+        <div class="row">
+          <input type="text" id="gsheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." style="flex:1; min-width:200px">
+          <button class="btn btn-primary" onclick="importFromGsheetUrl()">URLから読込</button>
         </div>
-        <textarea id="gsheet-area" placeholder="田中 太郎	男&#10;佐藤 花子	女&#10;鈴木 一郎	男" style="width:100%; height:140px; resize:vertical"></textarea>
-        <div class="row" style="margin-top:8px">
-          <label class="toggle"><input type="checkbox" id="gsheet-replace"> 既存を上書き</label>
-          <div style="flex:1"></div>
-          <button class="btn" onclick="document.getElementById('gsheet-area').value=''">クリア</button>
-          <button class="btn btn-primary" onclick="importFromGsheet()">確認して読込</button>
-        </div>
+        <details style="margin-top:10px">
+          <summary style="font-size:12px; color:var(--soft); cursor:pointer">セル内容を貼り付ける方法（URL がうまくいかない場合）</summary>
+          <textarea id="gsheet-area" placeholder="田中 太郎	男&#10;佐藤 花子	女&#10;鈴木 一郎	男" style="width:100%; height:120px; resize:vertical; margin-top:8px"></textarea>
+          <div class="row" style="margin-top:8px">
+            <label class="toggle"><input type="checkbox" id="gsheet-replace"> 既存を上書き</label>
+            <div style="flex:1"></div>
+            <button class="btn" onclick="document.getElementById('gsheet-area').value=''">クリア</button>
+            <button class="btn btn-primary" onclick="importFromGsheet()">確認して読込</button>
+          </div>
+        </details>
         <div id="gsheet-preview" style="display:none; margin-top:10px"></div>
       </div>
 
-      <div id="imp-body-excel" class="import-body">
-        <div style="background:#f7f6f1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; font-size:12px; margin-bottom:10px; color:var(--soft)">
-          A列＝名前、B列＝性別（男／女）。ヘッダー行は自動でスキップします。
-        </div>
+      <div id="imp-body-excel" class="import-body" style="display:none">
         <label id="excel-zone" style="display:flex; flex-direction:column; align-items:center; gap:4px; padding:28px; border:1.5px dashed var(--line); border-radius:10px; background:#fbfaf6; cursor:pointer; transition:all .15s">
           <span style="font-size:32px; opacity:.6">📂</span>
           <span style="font-weight:600">クリック または ドラッグ＆ドロップ</span>
@@ -526,14 +540,10 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
     </div>
 
     <div class="card">
-      <h2><span class="badge-num">②</span> 教室と班の設定</h2>
+      <h2><span class="badge-num">②</span> 教室の設定</h2>
       <div class="row">
-        <label>行 <input type="number" id="rows" min="1" max="12" value="4" style="width:60px"></label>
-        <label>列 <input type="number" id="cols" min="1" max="12" value="6" style="width:60px"></label>
-        <label>班人数 <select id="group-size">
-          <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option>
-        </select></label>
-        <button class="btn" onclick="autoLayoutGroups(); renderAllBoards(); save();">班を自動配置</button>
+        <label>縦 <input type="number" id="rows" min="1" max="12" value="4" style="width:60px"></label>
+        <label>横 <input type="number" id="cols" min="1" max="12" value="4" style="width:60px"></label>
         <span id="seat-stats" style="font-size:12px; color:var(--soft); font-weight:600"></span>
       </div>
       <div class="row" style="margin-top:8px">
@@ -546,19 +556,21 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         </div>
       </div>
       <div class="mode-row" style="margin-top:8px">
-        <button class="chip active" data-mode="disable" onclick="setEditMode('disable')">🚫 席を無効化</button>
-        <button class="chip"        data-mode="zonem"   onclick="setEditMode('zonem')">男子専用</button>
-        <button class="chip"        data-mode="zonef"   onclick="setEditMode('zonef')">女子専用</button>
+        <button class="chip active" data-mode="disable" onclick="setEditMode('disable')">🚫 無効席</button>
+        <button class="chip"        data-mode="zonem"   onclick="setEditMode('zonem')">男子席</button>
+        <button class="chip"        data-mode="zonef"   onclick="setEditMode('zonef')">女子席</button>
         <button class="chip"        data-mode="fix"     onclick="setEditMode('fix')">📌 固定席</button>
       </div>
       <div id="edit-hint" style="font-size:12px; color:var(--soft); margin:6px 0; min-height:18px"></div>
       <div id="fix-panel" style="display:none; padding:10px; border:1px solid var(--line); border-radius:10px; background:#fbfaf6; margin-bottom:8px"></div>
-      <div id="layout-grid" class="seat-grid" style="grid-template-columns:repeat(6,1fr)"></div>
+      <div class="board" id="layout-board" data-side="top" style="background:#fafdfa">
+        <div class="blackboard">黒板</div>
+        <div id="layout-grid" class="seat-grid" style="grid-template-columns:repeat(4,1fr)"></div>
+      </div>
     </div>
 
     <div class="card">
-      <h2>↔ 離席ルール（離す）</h2>
-      <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「A さんと B さんを ○ マス以上 <strong>離す</strong>」。距離は縦・横・斜めを含むマス数。</p>
+      <h2>離す</h2>
       <div class="row">
         <select id="rule-s1" style="flex:1; min-width:100px"><option value="">生徒A</option></select>
         <span>と</span>
@@ -572,8 +584,7 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
     </div>
 
     <div class="card">
-      <h2>🤝 同席ルール（近づける）</h2>
-      <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「A さんと B さんを ○ マス以内に <strong>近づける</strong>」。例：相棒同士、サポートが必要な児童など。</p>
+      <h2>近く</h2>
       <div class="row">
         <select id="comp-s1" style="flex:1; min-width:100px"><option value="">生徒A</option></select>
         <span>と</span>
@@ -593,34 +604,17 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         <select id="opt-theme" style="min-width:140px"></select>
       </div>
       <div class="row" style="margin-top:8px">
-        <label style="min-width:90px">字体：</label>
+        <label style="min-width:90px">フォント：</label>
         <select id="opt-font" style="min-width:200px">
-          <option value="'Noto Sans JP', sans-serif">Noto Sans JP（標準）</option>
-          <option value="'Kosugi Maru', sans-serif">Kosugi Maru（やわらか）</option>
-          <option value="'M PLUS Rounded 1c', sans-serif">M PLUS Rounded 1c（丸ゴシック）</option>
-          <option value="'Zen Maru Gothic', sans-serif">Zen Maru Gothic（丸ゴシック）</option>
-          <option value="'Yusei Magic', sans-serif">Yusei Magic（手書き風）</option>
-          <option value="'Klee One', cursive">Klee One（教科書体風）</option>
-          <option value="'BIZ UDPGothic', sans-serif">BIZ UDPGothic（読みやすさ重視）</option>
-          <option value="'Shippori Mincho', serif">Shippori Mincho（明朝）</option>
+          <option value="'BIZ UDPGothic', sans-serif">読みやすさ重視</option>
+          <option value="'Noto Sans JP', sans-serif">標準</option>
+          <option value="'Kosugi Maru', sans-serif">やわらか</option>
+          <option value="'M PLUS Rounded 1c', sans-serif">丸ゴシック</option>
+          <option value="'Zen Maru Gothic', sans-serif">丸ゴシック（やや太め）</option>
+          <option value="'Yusei Magic', sans-serif">手書き風</option>
+          <option value="'Klee One', cursive">教科書体風</option>
+          <option value="'Shippori Mincho', serif">明朝</option>
         </select>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <label style="min-width:90px">文字サイズ：</label>
-        <input type="range" id="opt-fontsize" min="80" max="160" step="5" value="100" style="flex:1; min-width:120px">
-        <span id="opt-fontsize-val" style="font-weight:700; min-width:42px; text-align:right">100%</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>💾 データ保存／読込</h2>
-      <p style="font-size:12px; color:var(--soft); margin-bottom:8px">設定・名簿・履歴をすべて JSON ファイルとして書き出し／取り込みできます。</p>
-      <div class="row">
-        <button class="btn btn-primary" onclick="exportData()">📤 JSON保存</button>
-        <button class="btn" onclick="document.getElementById('import-data-tab').click()">📥 JSON読込</button>
-        <input type="file" id="import-data-tab" accept=".json" style="display:none" onchange="importData(this.files[0])">
-        <div style="flex:1"></div>
-        <button class="btn btn-danger" onclick="resetAll()">🗑 全リセット</button>
       </div>
     </div>
 
@@ -629,20 +623,10 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
   <!-- ============ SEATING PANEL (shared by manual & auto) ============ -->
   <section id="panel-seating" class="panel" data-mode="manual">
 
-    <div class="action-bar manual-only">
-      <p style="margin:0; padding:6px 4px; font-size:13px; color:var(--soft); flex:1">
-        「いまの席」から「あたらしい席」へ、机をドラッグ＆ドロップで移動してください。
-      </p>
-    </div>
-
-    <div class="action-bar auto-only">
-      <button class="big-btn full" onclick="runFullShuffle()">全シャッフル</button>
-    </div>
-
     <div class="font-bar">
       <span style="font-size:12px; color:var(--soft); font-weight:600">文字サイズ</span>
       <button class="font-step" onclick="bumpFontSize(-10)">A−</button>
-      <input type="range" id="opt-fontsize-2" min="80" max="160" step="5" value="100" style="flex:1; min-width:120px">
+      <input type="range" id="opt-fontsize-2" min="80" max="250" step="5" value="100" style="flex:1; min-width:120px">
       <button class="font-step" onclick="bumpFontSize(10)">A＋</button>
       <span id="opt-fontsize-2-val" style="font-weight:700; min-width:40px; text-align:right; font-size:12px">100%</span>
     </div>
@@ -653,7 +637,12 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         <div class="blackboard">黒板</div>
         <div class="seat-grid" id="grid-current"></div>
       </div>
-      <div class="divider" id="divider">ドラッグして机を動かそう</div>
+      <div class="dual-divider">
+        <div class="divider manual-only" id="divider">↓ ドラッグして机を動かそう ↓</div>
+        <div class="divider-action auto-only">
+          <button class="big-btn full" onclick="runFullShuffle()">🎲 全シャッフル</button>
+        </div>
+      </div>
       <div class="board board--proposed" id="board-proposed" data-side="top">
         <div class="board-label">あたらしい席</div>
         <div class="blackboard">黒板</div>
@@ -671,7 +660,19 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 
   <!-- ============ HISTORY PANEL ============ -->
   <section id="panel-history" class="panel">
-    <h2 style="font-size:18px; font-weight:900; margin:6px 4px" id="history-title">📋 席替え履歴</h2>
+
+    <div class="card">
+      <h2>💾 データ保存／読込</h2>
+      <div class="row">
+        <button class="btn btn-primary" onclick="exportData()">📤 JSON保存</button>
+        <button class="btn" onclick="document.getElementById('import-data-tab').click()">📥 JSON読込</button>
+        <input type="file" id="import-data-tab" accept=".json" style="display:none" onchange="importData(this.files[0])">
+        <div style="flex:1"></div>
+        <button class="btn btn-danger" onclick="resetAll()">🗑 全リセット</button>
+      </div>
+    </div>
+
+    <h2 style="font-size:18px; font-weight:700; margin:6px 4px" id="history-title">📋 席替え履歴</h2>
     <div id="history-list"></div>
   </section>
 
@@ -753,7 +754,7 @@ var LS_KEY = 'seating_app_v4_new';
 
 var state = {
   students: [],
-  rows: 4, cols: 6,
+  rows: 4, cols: 4,
   disabled: [],
   zoneM: [], zoneF: [],
   fixed: {},          // {seatIdx: studentId}
@@ -762,9 +763,9 @@ var state = {
   current: null,      // [studentId|null] length = rows*cols
   proposed: null,     // [studentId|null] length = rows*cols
   history: [],
-  // Group concept
+  // (legacy: group concept retained for old data, but no UI)
   groupSize: 4,
-  groupLayout: [],     // [groupIdx][n] = seatIdx
+  groupLayout: [],
   // UI
   boardOrient: 'vertical',
   boardSide: 'top',   // top | bottom | left | right - blackboard position
@@ -776,7 +777,7 @@ var state = {
     maxTry: 500,
     animSpeed: 'normal', sound: true, confetti: true, showMovement: true,
     theme: 'soft',
-    font: "'Noto Sans JP', sans-serif",
+    font: "'BIZ UDPGothic', sans-serif",
     fontSize: 100
   }
 };
@@ -808,13 +809,15 @@ function applyFont(font){
 }
 function applyFontSize(pct){
   var p = pct || 100;
-  // CSS scale variable for seats and other calc()-based sizes
-  document.documentElement.style.setProperty('--fs', (p / 100).toFixed(2));
-  document.body.style.fontSize = (14 * p / 100).toFixed(1) + 'px';
+  // "Current 100% means new 80%": shift the scale base so 100 → 1.25, 80 → 1.0, 250 → 3.125
+  var fs = p / 80;
+  document.documentElement.style.setProperty('--fs', fs.toFixed(3));
+  // Body font-size scales similarly (14px baseline at fs=1.0)
+  document.body.style.fontSize = (14 * fs).toFixed(1) + 'px';
 }
 // Set + sync all sliders + persist
 function setFontSize(pct){
-  var v = clamp(parseInt(pct) || 100, 80, 160);
+  var v = clamp(parseInt(pct) || 100, 80, 250);
   state.options.fontSize = v;
   applyFontSize(v);
   ['opt-fontsize','opt-fontsize-2'].forEach(function(id){
@@ -852,11 +855,14 @@ function showToast(msg, type){
   setTimeout(function(){ if (el.parentNode) el.remove(); }, 2800);
 }
 function findStudent(id){ return state.students.find(function(s){ return s.id === id; }) || null; }
-function genderColor(g){
-  if (g === 'male')   return '#2c5e8f'; // blue
-  if (g === 'female') return '#a8395f'; // red/pink
-  return 'inherit';
+// Card background by gender. Returns class suffix.
+function genderCardClass(g){
+  if (g === 'male')   return 'gend-male';
+  if (g === 'female') return 'gend-female';
+  return '';
 }
+// Kept for backward compatibility but now returns inherit (we color the card, not text)
+function genderColor(g){ return 'inherit'; }
 
 // =================================================================
 // STORAGE
@@ -944,7 +950,7 @@ function renderRoster(){
   var m = state.students.filter(function(s){ return s.gender === 'male'; }).length;
   var f = state.students.filter(function(s){ return s.gender === 'female'; }).length;
   document.getElementById('roster-title').innerHTML =
-    '<span class="badge-num">①</span> データ取込（' + state.students.length + '人 / ♂' + m + ' ♀' + f + '）';
+    '<span class="badge-num">①</span> データ取込（' + state.students.length + '人 / 男' + m + ' / 女' + f + '）';
 
   if (!state.students.length) {
     el.innerHTML = '<span style="color:var(--soft); font-size:13px">ここに名前が並びます</span>';
@@ -952,7 +958,6 @@ function renderRoster(){
     var fixedIds = Object.values(state.fixed);
     el.innerHTML = state.students.map(function(s){
       var pinned = fixedIds.indexOf(s.id) !== -1;
-      var col = genderColor(s.gender);
       var cls = 'tag' + (s.gender ? ' ' + s.gender : '');
       return '<div class="' + cls + '">' +
         '<select class="gender-sel" onchange="changeGender(\'' + s.id + '\',this.value)">' +
@@ -960,7 +965,7 @@ function renderRoster(){
           '<option value="male"'   + (s.gender === 'male'   ? ' selected' : '') + '>男</option>' +
           '<option value="female"' + (s.gender === 'female' ? ' selected' : '') + '>女</option>' +
         '</select>' +
-        '<span style="color:' + col + '">' + s.name + '</span>' +
+        '<span>' + s.name + '</span>' +
         (pinned ? '<span style="font-size:11px">📌</span>' : '') +
         '<button class="tag-x" onclick="removeStudent(\'' + s.id + '\')">×</button>' +
       '</div>';
@@ -1043,16 +1048,17 @@ function makeLayoutSeat(idx){
   if (!isDisabled && isZM) cls += ' cbm';
   if (!isDisabled && isZF) cls += ' cbf';
 
+  if (fixedS && fixedS.gender) cls += ' ' + genderCardClass(fixedS.gender);
+
   var inner = '';
-  if (isZM) inner += '<span class="zoneM">男子専</span>';
-  if (isZF) inner += '<span class="zoneF">女子専</span>';
+  if (isZM) inner += '<span class="zoneM">男子席</span>';
+  if (isZF) inner += '<span class="zoneF">女子席</span>';
   if (fixedId) inner += '<span class="pin">📌</span>';
 
   if (isDisabled) {
     inner += '<span style="font-size:18px; opacity:.5">✕</span>';
   } else if (fixedS) {
-    var c = genderColor(fixedS.gender);
-    inner += '<span class="nm" style="color:' + c + '">' + fixedS.name + '</span>';
+    inner += '<span class="nm">' + fixedS.name + '</span>';
   }
   el.className = cls;
   el.innerHTML = inner;
@@ -1095,8 +1101,9 @@ function renderFixPanel(idx){
              '<div style="display:flex; flex-wrap:wrap; gap:6px">' +
              '<button class="btn btn-danger" onclick="assignFixed(null)">固定解除</button>';
   state.students.forEach(function(s){
-    var c = genderColor(s.gender);
-    html += '<button class="btn" style="color:' + c + '" onclick="assignFixed(\'' + s.id + '\')">' +
+    var bg = s.gender === 'male' ? '#cfe1f2' : s.gender === 'female' ? '#f2cdd9' : '#fff';
+    var bc = s.gender === 'male' ? '#9cc0db' : s.gender === 'female' ? '#dfa0b6' : 'var(--line)';
+    html += '<button class="btn" style="background:' + bg + '; border-color:' + bc + '" onclick="assignFixed(\'' + s.id + '\')">' +
             s.name + '</button>';
   });
   html += '</div>';
@@ -1755,20 +1762,21 @@ function makeBoardSeat(idx, seating, which){
   } else if (!s) {
     cls += ' empty';
   }
+  // Add gender card color when occupied
+  if (s && s.gender) cls += ' ' + genderCardClass(s.gender);
   el.className = cls;
   el.dataset.seat = idx;
   el.dataset.board = which;
 
   var inner = '';
-  if (state.zoneM.indexOf(idx) !== -1 && !s) inner += '<span class="zoneM">男子専</span>';
-  if (state.zoneF.indexOf(idx) !== -1 && !s) inner += '<span class="zoneF">女子専</span>';
+  if (state.zoneM.indexOf(idx) !== -1 && !s) inner += '<span class="zoneM">男子席</span>';
+  if (state.zoneF.indexOf(idx) !== -1 && !s) inner += '<span class="zoneF">女子席</span>';
   if (state.fixed[idx]) inner += '<span class="pin">📌</span>';
 
   if (isDisabled) {
     inner += '<span style="font-size:18px; opacity:.5">✕</span>';
   } else if (s) {
-    var c = genderColor(s.gender);
-    inner += '<span class="nm" style="color:' + c + '">' + s.name + '</span>';
+    inner += '<span class="nm">' + s.name + '</span>';
   }
   el.innerHTML = inner;
 
@@ -1966,15 +1974,119 @@ function renderHistory(){
     return;
   }
   list.innerHTML = state.history.map(function(r, i){
-    return '<div class="history-card">' +
+    var hid = r.id;
+    return '<div class="history-card" id="hcard-' + hid + '">' +
       '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px">' +
-        '<div><span style="font-weight:900; color:var(--purple)">#' + (state.history.length - i) + '</span>' +
+        '<div><span style="font-weight:700; color:var(--purple)">#' + (state.history.length - i) + '</span>' +
         '<span style="margin-left:6px; font-size:12px; color:var(--soft)">' + r.date + '</span></div>' +
-        '<button class="btn btn-primary" onclick="restoreHistory(\'' + r.id + '\')">この席順に戻す</button>' +
+        '<div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap; position:relative">' +
+          '<div class="export-menu-wrap">' +
+            '<button class="btn" onclick="toggleExportMenu(\'' + hid + '\', event)">📤 書き出し ▾</button>' +
+            '<div class="export-menu" id="emenu-' + hid + '" style="display:none">' +
+              '<button onclick="exportHistory(\'' + hid + '\',\'json\')">JSON</button>' +
+              '<button onclick="exportHistory(\'' + hid + '\',\'jpeg\')">JPEG</button>' +
+              '<button onclick="exportHistory(\'' + hid + '\',\'pdf\')">PDF</button>' +
+            '</div>' +
+          '</div>' +
+          '<button class="btn" onclick="printHistory(\'' + hid + '\')">🖨 印刷</button>' +
+          '<button class="btn btn-primary" onclick="restoreHistory(\'' + hid + '\')">この席順に戻す</button>' +
+        '</div>' +
       '</div>' +
       buildHistoryGrid(r) +
     '</div>';
   }).join('');
+}
+
+function toggleExportMenu(hid, ev){
+  if (ev) ev.stopPropagation();
+  // close other menus
+  document.querySelectorAll('.export-menu').forEach(function(m){ if (m.id !== 'emenu-' + hid) m.style.display = 'none'; });
+  var m = document.getElementById('emenu-' + hid);
+  if (!m) return;
+  m.style.display = (m.style.display === 'none') ? 'block' : 'none';
+}
+document.addEventListener('click', function(){
+  document.querySelectorAll('.export-menu').forEach(function(m){ m.style.display = 'none'; });
+});
+
+function getHistoryEntry(hid){ return state.history.find(function(h){ return h.id === hid; }); }
+
+function printHistory(hid){
+  var r = getHistoryEntry(hid); if (!r) return;
+  buildPrintAreaForHistory(r);
+  setTimeout(function(){ window.print(); }, 50);
+}
+
+function exportHistory(hid, fmt){
+  var r = getHistoryEntry(hid); if (!r) return;
+  if (fmt === 'json') {
+    var json = JSON.stringify(r, null, 2);
+    var blob = new Blob([json], { type: 'application/json' });
+    downloadBlob(blob, 'seating_' + r.id + '.json');
+  } else if (fmt === 'pdf') {
+    // PDF: build print area, ask user to choose "Save as PDF" in browser dialog
+    buildPrintAreaForHistory(r);
+    showToast('印刷ダイアログで「PDF として保存」を選んでください');
+    setTimeout(function(){ window.print(); }, 50);
+  } else if (fmt === 'jpeg') {
+    exportHistoryAsImage(r);
+  }
+  toggleExportMenu(hid);
+}
+
+function buildPrintAreaForHistory(r){
+  var area = document.getElementById('print-area');
+  var dateStr = r.date || '';
+  var bbTop = (state.boardSide === 'top'  || state.boardSide === 'left' || !state.boardSide);
+  var bbBottom = (state.boardSide === 'bottom');
+  var html = '<h1>席順</h1>' + '<div class="print-meta">' + dateStr + '</div>';
+  if (bbTop) html += '<div class="print-blackboard">黒板</div>';
+  html += '<div class="print-grid" style="grid-template-columns:repeat(' + r.cols + ',1fr); grid-template-rows:repeat(' + r.rows + ',1fr)">';
+  var total = r.rows * r.cols;
+  for (var i = 0; i < total; i++) {
+    var sid = r.seating[i];
+    var s = sid ? findStudent(sid) : null;
+    var isD = (r.disabled || []).indexOf(i) !== -1;
+    var cls = 'print-seat' + (isD ? ' disabled' : (s ? '' : ' empty'));
+    var bg = '';
+    if (s && s.gender === 'male')   bg = ' style="background:#cfe1f2"';
+    else if (s && s.gender === 'female') bg = ' style="background:#f2cdd9"';
+    var inner = isD ? '✕' : (s ? s.name : '');
+    html += '<div class="' + cls + '"' + bg + '>' + inner + '</div>';
+  }
+  html += '</div>';
+  if (bbBottom) html += '<div class="print-blackboard">黒板</div>';
+  area.innerHTML = html;
+}
+
+function exportHistoryAsImage(r){
+  // Use html2canvas if available, else load via CDN
+  function doRender(){
+    var card = document.getElementById('hcard-' + r.id);
+    if (!card) { showToast('要素が見つかりません', 'error'); return; }
+    html2canvas(card, { backgroundColor: '#ffffff', scale: 2 }).then(function(canvas){
+      canvas.toBlob(function(blob){
+        if (blob) downloadBlob(blob, 'seating_' + r.id + '.jpg');
+      }, 'image/jpeg', 0.92);
+    }).catch(function(){ showToast('画像書き出しに失敗', 'error'); });
+  }
+  if (typeof html2canvas === 'undefined') {
+    var sc = document.createElement('script');
+    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    sc.onload = doRender;
+    sc.onerror = function(){ showToast('画像ライブラリ読込失敗', 'error'); };
+    document.head.appendChild(sc);
+  } else {
+    doRender();
+  }
+}
+
+function downloadBlob(blob, filename){
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
 }
 function buildHistoryGrid(r){
   var html = '<div class="history-grid" style="grid-template-columns:repeat(' + r.cols + ',1fr)">';
@@ -1987,8 +2099,8 @@ function buildHistoryGrid(r){
     var inner = '';
     if (isD) inner = '<span style="font-size:11px; opacity:.5">✕</span>';
     else if (s) {
-      var c = genderColor(s.gender);
-      inner = '<span class="nm" style="color:' + c + '">' + s.name + '</span>';
+      if (s.gender) cls += ' ' + genderCardClass(s.gender);
+      inner = '<span class="nm">' + s.name + '</span>';
     }
     html += '<div class="' + cls + '">' + inner + '</div>';
   }
@@ -2044,6 +2156,25 @@ function importFromGsheet(){
     .map(parseLine).filter(function(p){ return p && p.name; });
   if (!parsed.length) { showToast('有効な名前が見つかりませんでした', 'error'); return; }
   showImportPreview(parsed, 'gsheet');
+}
+function importFromGsheetUrl(){
+  var url = document.getElementById('gsheet-url').value.trim();
+  if (!url) { showToast('URL を入力してください', 'error'); return; }
+  var m = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9_-]+)/);
+  if (!m) { showToast('Google スプレッドシートの URL を貼り付けてください', 'error'); return; }
+  var sheetId = m[1];
+  var gidMatch = url.match(/[?#&]gid=(\d+)/);
+  var gid = gidMatch ? gidMatch[1] : '0';
+  var csvUrl = 'https://docs.google.com/spreadsheets/d/' + sheetId + '/export?format=csv&gid=' + gid;
+  showToast('読み込み中…');
+  fetch(csvUrl).then(function(r){
+    if (!r.ok) throw new Error('http ' + r.status);
+    return r.text();
+  }).then(function(text){
+    parseCSV(text);
+  }).catch(function(){
+    showToast('読込失敗。シートを「リンクを知っている全員が閲覧可」または「ウェブに公開」にしてください', 'error');
+  });
 }
 function showImportPreview(parsed, source){
   pendingImport = parsed;
@@ -2321,7 +2452,7 @@ function setBoardSide(side){
   save();
 }
 function applyBoardSide(){
-  ['board-current','board-proposed'].forEach(function(id){
+  ['board-current','board-proposed','layout-board'].forEach(function(id){
     var el = document.getElementById(id);
     if (el) el.dataset.side = state.boardSide;
   });
@@ -2341,15 +2472,6 @@ function bindEvents(){
   document.getElementById('open-settings').addEventListener('click', openSettings);
   document.getElementById('rows').addEventListener('input', onLayoutChange);
   document.getElementById('cols').addEventListener('input', onLayoutChange);
-  document.getElementById('group-size').addEventListener('change', function(e){
-    var ns = parseInt(e.target.value);
-    if (ns !== state.groupSize) {
-      state.groupSize = ns;
-      autoLayoutGroups();
-      save(); renderLayoutGrid(); updateSeatStats();
-      showToast('班人数を' + ns + '人に変更');
-    }
-  });
   // Blackboard side selector
   document.querySelectorAll('#bb-side-sel button').forEach(function(b){
     b.addEventListener('click', function(){ setBoardSide(b.dataset.side); });
@@ -2398,7 +2520,6 @@ function init(){
   // Apply loaded UI states
   document.getElementById('rows').value = state.rows;
   document.getElementById('cols').value = state.cols;
-  document.getElementById('group-size').value = state.groupSize;
   applyOrient();
   applyBoardSide();
   applyTheme(state.options.theme || 'soft');
