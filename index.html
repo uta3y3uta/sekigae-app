@@ -489,7 +489,6 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
   <h1>席替えアプリ <span class="sub">classroom seating</span></h1>
   <div class="header-tools">
     <button class="icon-btn" id="orient-toggle" title="2分割の向きを切替">⇅</button>
-    <button class="icon-btn" id="open-settings" title="細かい設定">⚙</button>
   </div>
 </header>
 
@@ -2517,7 +2516,6 @@ function bindEvents(){
     b.addEventListener('click', function(){ switchTab(b.dataset.tab); });
   });
   document.getElementById('orient-toggle').addEventListener('click', toggleOrient);
-  document.getElementById('open-settings').addEventListener('click', openSettings);
   document.getElementById('rows').addEventListener('input', onLayoutChange);
   document.getElementById('cols').addEventListener('input', onLayoutChange);
   // Blackboard side selector
