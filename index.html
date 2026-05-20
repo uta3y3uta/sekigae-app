@@ -223,13 +223,19 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
 /* Blackboard side selector */
 .bb-side-sel{
   display:inline-flex; gap:2px; padding:3px; background:#f0eee7; border-radius:8px;
-  margin-left:6px;
 }
 .bb-side-sel button{
-  border:none; background:transparent; padding:4px 8px; border-radius:6px;
-  font-family:inherit; font-size:12px; font-weight:600; color:var(--soft); cursor:pointer;
+  border:none; background:transparent; width:28px; height:28px; border-radius:6px;
+  font-family:inherit; font-size:14px; font-weight:700; color:var(--soft); cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
 }
 .bb-side-sel button.active{background:#fff; color:var(--ink); box-shadow:0 1px 2px rgba(58,71,98,.08)}
+
+/* Combined settings row */
+.settings-row{
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+}
+.settings-row > label{display:inline-flex; align-items:center; gap:4px; font-size:13px}
 
 .seat{
   position:relative;
@@ -541,29 +547,24 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 
     <div class="card">
       <h2><span class="badge-num">②</span> 教室の設定</h2>
-      <div class="row">
-        <label>縦 <input type="number" id="rows" min="1" max="12" value="4" style="width:60px"></label>
-        <label>横 <input type="number" id="cols" min="1" max="12" value="4" style="width:60px"></label>
-        <span id="seat-stats" style="font-size:12px; color:var(--soft); font-weight:600"></span>
-      </div>
-      <div class="row" style="margin-top:8px">
-        <label style="font-size:13px; color:var(--soft)">黒板の位置：</label>
+      <div class="settings-row">
+        <label>縦 <input type="number" id="rows" min="1" max="12" value="4" style="width:56px"></label>
+        <label>横 <input type="number" id="cols" min="1" max="12" value="4" style="width:56px"></label>
+        <span style="color:var(--soft); font-size:12px">黒板</span>
         <div class="bb-side-sel" id="bb-side-sel">
-          <button data-side="top">↑ 前</button>
-          <button data-side="bottom">↓ 後</button>
-          <button data-side="left">← 左</button>
-          <button data-side="right">→ 右</button>
+          <button data-side="top"    title="前">↑</button>
+          <button data-side="bottom" title="後">↓</button>
+          <button data-side="left"   title="左">←</button>
+          <button data-side="right"  title="右">→</button>
         </div>
-      </div>
-      <div class="mode-row" style="margin-top:8px">
         <button class="chip active" data-mode="disable" onclick="setEditMode('disable')">🚫 無効席</button>
         <button class="chip"        data-mode="zonem"   onclick="setEditMode('zonem')">男子席</button>
         <button class="chip"        data-mode="zonef"   onclick="setEditMode('zonef')">女子席</button>
         <button class="chip"        data-mode="fix"     onclick="setEditMode('fix')">📌 固定席</button>
+        <span id="seat-stats" style="font-size:12px; color:var(--soft); font-weight:600; margin-left:auto"></span>
       </div>
-      <div id="edit-hint" style="font-size:12px; color:var(--soft); margin:6px 0; min-height:18px"></div>
-      <div id="fix-panel" style="display:none; padding:10px; border:1px solid var(--line); border-radius:10px; background:#fbfaf6; margin-bottom:8px"></div>
-      <div class="board" id="layout-board" data-side="top" style="background:#fafdfa">
+      <div id="fix-panel" style="display:none; padding:10px; border:1px solid var(--line); border-radius:10px; background:#fbfaf6; margin:8px 0"></div>
+      <div class="board" id="layout-board" data-side="top" style="background:#fafdfa; margin-top:14px">
         <div class="blackboard">黒板</div>
         <div id="layout-grid" class="seat-grid" style="grid-template-columns:repeat(4,1fr)"></div>
       </div>
@@ -1006,9 +1007,8 @@ function resizeSeating(arr, total){
 function updateSeatStats(){
   var total = state.rows * state.cols;
   var active = total - state.disabled.length;
-  var groups = state.groupLayout.length;
   document.getElementById('seat-stats').textContent =
-    '有効席:' + active + '／全:' + total + '／' + groups + '班';
+    '有効席 ' + active + ' / 全 ' + total;
 }
 
 function setEditMode(m){
@@ -1016,13 +1016,6 @@ function setEditMode(m){
   document.querySelectorAll('.chip[data-mode]').forEach(function(b){
     b.classList.toggle('active', b.dataset.mode === m);
   });
-  var hints = {
-    disable: '席をクリック → 有効／無効を切替',
-    zonem: '席をクリック →「男子専用」を切替',
-    zonef: '席をクリック →「女子専用」を切替',
-    fix:   '📌 固定したい席をクリックして生徒を選択'
-  };
-  document.getElementById('edit-hint').textContent = hints[m] || '';
   document.getElementById('fix-panel').style.display = 'none';
   renderLayoutGrid();
 }
