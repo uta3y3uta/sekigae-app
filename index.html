@@ -789,7 +789,7 @@ var state = {
     keepFixed: true, keepZone: true, sepRules: true, compRules: true, sepGender: false,
     maxTry: 500,
     animSpeed: 'normal', sound: true, confetti: true, showMovement: true,
-    theme: 'soft',
+    theme: 'melon',
     font: "'BIZ UDPGothic', sans-serif",
     fontSize: 100
   }
@@ -810,7 +810,7 @@ var THEMES = {
 };
 
 function applyTheme(name){
-  var t = THEMES[name] || THEMES.soft;
+  var t = THEMES[name] || THEMES.melon;
   var s = document.documentElement.style;
   ['purple','blue','pink','green','yellow','orange','ink','soft','line'].forEach(function(k){
     s.setProperty('--' + k, t[k]);
@@ -2570,7 +2570,7 @@ function init(){
   document.getElementById('cols').value = state.cols;
   applyOrient();
   applyBoardSide();
-  applyTheme(state.options.theme || 'soft');
+  applyTheme(state.options.theme || 'melon');
   applyFont(state.options.font || "'Noto Sans JP', sans-serif");
   applyFontSize(state.options.fontSize || 100);
   if (!state.groupLayout || !state.groupLayout.length) autoLayoutGroups();
