@@ -298,6 +298,13 @@ input[type=text]:focus,input[type=number]:focus,select:focus,textarea:focus{bord
 .seat .zoneM{color:#5d7da8}
 .seat .zoneF{color:#a85d7d}
 .seat .seat-num{position:absolute; bottom:1px; right:3px; font-size:calc(9px * var(--fs, 1)); color:var(--soft)}
+.seat.editing{cursor:text}
+.seat .inline-name-edit{
+  width:90%; font-family:inherit; font-size:calc(13px * var(--fs, 1)); font-weight:600;
+  text-align:center; padding:2px 4px;
+  border:1.5px solid var(--purple); border-radius:6px; background:#fff; outline:none;
+  color:var(--ink);
+}
 
 /* Confirm bar */
 .confirm-bar{display:flex; gap:10px; flex-wrap:wrap}
@@ -643,7 +650,7 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         <div class="seat-grid" id="grid-current"></div>
       </div>
       <div class="dual-divider">
-        <div class="divider manual-only" id="divider">↓ ドラッグして机を動かそう ↓</div>
+        <div class="divider manual-only" id="divider">ドラッグして机を動かそう</div>
         <div class="divider-action auto-only">
           <button class="big-btn full" onclick="runFullShuffle()">🎲 全シャッフル</button>
         </div>
@@ -1806,6 +1813,16 @@ function makeBoardSeat(idx, seating, which){
       el.classList.add('dragging');
     });
     el.addEventListener('dragend', function(){ el.classList.remove('dragging'); });
+    // 中央クリックで名前を編集（ドラッグ操作との両立のため、座席中央 50% を判定）
+    el.addEventListener('click', function(ev){
+      if (el.classList.contains('editing')) return;
+      var r = el.getBoundingClientRect();
+      var cx = ev.clientX - r.left;
+      var cy = ev.clientY - r.top;
+      var inX = cx >= r.width * 0.25 && cx <= r.width * 0.75;
+      var inY = cy >= r.height * 0.25 && cy <= r.height * 0.75;
+      if (inX && inY) startInlineNameEdit(el, sid);
+    });
     // Touch fallback
     setupTouchDrag(el, which, idx);
   }
@@ -1822,6 +1839,50 @@ function makeBoardSeat(idx, seating, which){
     });
   }
   return el;
+}
+
+// 名前の手入力編集：座席の中央クリックで起動
+function startInlineNameEdit(seatEl, sid){
+  var nm = seatEl.querySelector('.nm');
+  if (!nm) return;
+  var s = findStudent(sid);
+  if (!s) return;
+  document.querySelectorAll('.seat.editing input').forEach(function(inp){ inp.blur(); });
+  seatEl.classList.add('editing');
+  seatEl.draggable = false;
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.value = s.name;
+  input.className = 'inline-name-edit';
+  nm.replaceWith(input);
+  input.focus(); input.select();
+  var done = false;
+  function commit(){
+    if (done) return; done = true;
+    var v = (input.value || '').trim();
+    if (v && v !== s.name) {
+      state.students = state.students.map(function(x){ return x.id === sid ? { id:x.id, name:v, gender:x.gender } : x; });
+      save();
+    }
+    seatEl.classList.remove('editing');
+    seatEl.draggable = true;
+    renderAllBoards();
+    renderRoster();
+  }
+  function cancel(){
+    if (done) return; done = true;
+    seatEl.classList.remove('editing');
+    seatEl.draggable = true;
+    renderAllBoards();
+  }
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    else if (e.key === 'Escape') { cancel(); }
+  });
+  input.addEventListener('mousedown',   function(e){ e.stopPropagation(); });
+  input.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+  input.addEventListener('dragstart',   function(e){ e.preventDefault(); e.stopPropagation(); });
 }
 
 // Drag semantics ("desk literally moves"):
@@ -2483,7 +2544,7 @@ function toggleOrient(){
 }
 function applyOrient(){
   document.getElementById('dual-board').dataset.orient = state.boardOrient;
-  document.getElementById('divider').textContent = (state.boardOrient === 'vertical') ? 'ドラッグして机を動かそう' : 'ドラッグして机を動かそう →';
+  document.getElementById('divider').textContent = 'ドラッグして机を動かそう';
 }
 
 function setBoardSide(side){
