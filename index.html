@@ -553,6 +553,9 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       </div>
 
       <div id="tag-area" class="tag-area" style="margin-top:14px"></div>
+      <div id="tag-actions" style="display:none; margin-top:10px">
+        <button class="btn btn-danger" onclick="clearAllStudents()">🗑 名簿を全削除</button>
+      </div>
     </div>
 
     <div class="card">
@@ -949,8 +952,24 @@ function removeStudent(id){
   Object.keys(state.fixed).forEach(function(k){ if (state.fixed[k] === id) delete state.fixed[k]; });
   if (state.current)  state.current  = state.current .map(function(s){ return s === id ? null : s; });
   if (state.proposed) state.proposed = state.proposed.map(function(s){ return s === id ? null : s; });
-  state.sepRules = state.sepRules.filter(function(r){ return r.s1id !== id && r.s2id !== id; });
+  state.sepRules  = state.sepRules .filter(function(r){ return r.s1id !== id && r.s2id !== id; });
+  state.compRules = state.compRules.filter(function(r){ return r.s1id !== id && r.s2id !== id; });
   save(); renderRoster();
+}
+function clearAllStudents(){
+  if (!state.students.length) return;
+  if (!confirm('名簿の全員（' + state.students.length + '名）を削除します。よろしいですか？')) return;
+  state.students = [];
+  state.fixed = {};
+  state.sepRules = [];
+  state.compRules = [];
+  state.current  = emptySeating();
+  state.proposed = emptySeating();
+  saveBaseline();
+  save();
+  renderRoster();
+  renderAllBoards();
+  showToast('名簿を全削除しました');
 }
 function changeGender(id, g){
   state.students = state.students.map(function(s){ return s.id === id ? { id:s.id, name:s.name, gender:g } : s; });
@@ -964,6 +983,8 @@ function renderRoster(){
   document.getElementById('roster-title').innerHTML =
     '<span class="badge-num">①</span> データ取込';
 
+  var actions = document.getElementById('tag-actions');
+  if (actions) actions.style.display = state.students.length ? 'block' : 'none';
   if (!state.students.length) {
     el.innerHTML = '<span style="color:var(--soft); font-size:13px">ここに名前が並びます</span>';
   } else {
@@ -1931,7 +1952,14 @@ function startInlineNameEdit(seatEl, sid){
   function commit(){
     if (done) return; done = true;
     var v = (input.value || '').trim();
-    if (v && v !== s.name) {
+    var board = seatEl.dataset.board;
+    var idx = parseInt(seatEl.dataset.seat);
+    if (!v) {
+      // 名前を空にしたら、この席から児童を外す（名簿には残す）→ もとの灰色の空席に
+      if (board === 'current'  && state.current ) state.current [idx] = null;
+      if (board === 'proposed' && state.proposed) state.proposed[idx] = null;
+      save();
+    } else if (v !== s.name) {
       state.students = state.students.map(function(x){ return x.id === sid ? { id:x.id, name:v, gender:x.gender } : x; });
       save();
     }
