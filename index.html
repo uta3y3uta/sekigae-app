@@ -1838,7 +1838,78 @@ function makeBoardSeat(idx, seating, which){
       } catch(e){}
     });
   }
+  // 空席の中央クリック → 名前を新規入力できる
+  if (!isDisabled && !s) {
+    el.addEventListener('click', function(ev){
+      if (el.classList.contains('editing')) return;
+      var r = el.getBoundingClientRect();
+      var cx = ev.clientX - r.left;
+      var cy = ev.clientY - r.top;
+      var inX = cx >= r.width * 0.25 && cx <= r.width * 0.75;
+      var inY = cy >= r.height * 0.25 && cy <= r.height * 0.75;
+      if (inX && inY) startInlineEditEmptySeat(el, which, idx);
+    });
+  }
   return el;
+}
+
+// 空席の中央クリックで新規名前入力 → 既存名簿に同名がいれば再利用、なければ追加
+function startInlineEditEmptySeat(seatEl, board, idx){
+  document.querySelectorAll('.seat.editing input').forEach(function(inp){ inp.blur(); });
+  seatEl.classList.add('editing');
+  // 中身を input だけに差替
+  var orig = seatEl.innerHTML;
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'inline-name-edit';
+  input.placeholder = '名前を入力';
+  seatEl.innerHTML = '';
+  seatEl.appendChild(input);
+  input.focus();
+  var done = false;
+  function commit(){
+    if (done) return; done = true;
+    var v = (input.value || '').trim();
+    if (v) {
+      // 同名で、まだどこにも置かれていない児童を優先利用
+      var inUse = {};
+      (state.current  || []).forEach(function(sid){ if (sid) inUse[sid] = true; });
+      (state.proposed || []).forEach(function(sid){ if (sid) inUse[sid] = true; });
+      var existing = state.students.find(function(s){ return s.name === v && !inUse[s.id]; });
+      var sid;
+      if (existing) {
+        sid = existing.id;
+      } else {
+        sid = uid();
+        state.students.push({ id: sid, name: v, gender: '' });
+      }
+      var total = state.rows * state.cols;
+      if (board === 'current') {
+        if (!state.current || state.current.length !== total) state.current = emptySeating();
+        state.current[idx] = sid;
+      } else {
+        if (!state.proposed || state.proposed.length !== total) state.proposed = emptySeating();
+        state.proposed[idx] = sid;
+      }
+      save();
+    }
+    seatEl.classList.remove('editing');
+    renderAllBoards();
+    renderRoster();
+  }
+  function cancel(){
+    if (done) return; done = true;
+    seatEl.classList.remove('editing');
+    seatEl.innerHTML = orig;
+    renderAllBoards();
+  }
+  input.addEventListener('blur', commit);
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    else if (e.key === 'Escape') { cancel(); }
+  });
+  input.addEventListener('mousedown',   function(e){ e.stopPropagation(); });
+  input.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
 }
 
 // 名前の手入力編集：座席の中央クリックで起動
@@ -2004,10 +2075,12 @@ function copyCurrentToProposed(force){
   save();
 }
 function clearProposed(){
-  // ベースライン（手動操作前の席順）に戻す。手動で動かしたカードが元の席に戻る。
-  restoreFromBaseline();
+  // 完全クリア：いまの席もあたらしい席も全部空にする（名簿は残る）
+  state.current  = emptySeating();
+  state.proposed = emptySeating();
+  saveBaseline();
   save(); renderAllBoards();
-  showToast('元の席に戻しました');
+  showToast('クリアしました');
 }
 function resetCurrent(){
   // Restore current from backup (last shuffle) or from latest history entry; clear proposed
