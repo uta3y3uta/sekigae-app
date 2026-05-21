@@ -490,9 +490,7 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
 
 <header class="app-header">
   <h1>席替えアプリ <span class="sub">classroom seating</span></h1>
-  <div class="header-tools">
-    <button class="icon-btn" id="orient-toggle" title="2分割の向きを切替">⇅</button>
-  </div>
+  <div class="header-tools"></div>
 </header>
 
 <nav class="tabs">
@@ -528,21 +526,12 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       </div>
 
       <div id="imp-body-gsheet" class="import-body" style="display:none">
-        <p style="font-size:12px; color:var(--soft); margin-bottom:8px">「公開」または「リンクを知っている全員」になっている Google スプレッドシートの URL を貼り付けてください。A 列＝名前、B 列＝性別（任意）。</p>
         <div class="row">
           <input type="text" id="gsheet-url" placeholder="https://docs.google.com/spreadsheets/d/..." style="flex:1; min-width:200px">
           <button class="btn btn-primary" onclick="importFromGsheetUrl()">URLから読込</button>
         </div>
-        <details style="margin-top:10px">
-          <summary style="font-size:12px; color:var(--soft); cursor:pointer">セル内容を貼り付ける方法（URL がうまくいかない場合）</summary>
-          <textarea id="gsheet-area" placeholder="田中 太郎	男&#10;佐藤 花子	女&#10;鈴木 一郎	男" style="width:100%; height:120px; resize:vertical; margin-top:8px"></textarea>
-          <div class="row" style="margin-top:8px">
-            <label class="toggle"><input type="checkbox" id="gsheet-replace"> 既存を上書き</label>
-            <div style="flex:1"></div>
-            <button class="btn" onclick="document.getElementById('gsheet-area').value=''">クリア</button>
-            <button class="btn btn-primary" onclick="importFromGsheet()">確認して読込</button>
-          </div>
-        </details>
+        <textarea id="gsheet-area" style="display:none"></textarea>
+        <input type="checkbox" id="gsheet-replace" style="display:none">
         <div id="gsheet-preview" style="display:none; margin-top:10px"></div>
       </div>
 
@@ -644,11 +633,12 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       <input type="range" id="opt-fontsize-2" min="80" max="250" step="5" value="100" style="flex:1; min-width:120px">
       <button class="font-step" onclick="bumpFontSize(10)">A＋</button>
       <span id="opt-fontsize-2-val" style="font-weight:700; min-width:40px; text-align:right; font-size:12px">100%</span>
+      <button class="font-step" id="orient-toggle" title="2分割の向きを切替" style="width:auto; padding:0 10px">⇅</button>
     </div>
 
     <div class="dual-board" id="dual-board" data-orient="vertical">
       <div class="board board--current" id="board-current" data-side="top">
-        <div class="board-label">いまの席</div>
+        <div class="board-label">今</div>
         <div class="blackboard">黒板</div>
         <div class="seat-grid" id="grid-current"></div>
       </div>
@@ -659,7 +649,7 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
         </div>
       </div>
       <div class="board board--proposed" id="board-proposed" data-side="top">
-        <div class="board-label">あたらしい席</div>
+        <div class="board-label">新</div>
         <div class="blackboard">黒板</div>
         <div class="seat-grid" id="grid-proposed"></div>
       </div>
@@ -965,7 +955,7 @@ function renderRoster(){
   var m = state.students.filter(function(s){ return s.gender === 'male'; }).length;
   var f = state.students.filter(function(s){ return s.gender === 'female'; }).length;
   document.getElementById('roster-title').innerHTML =
-    '<span class="badge-num">①</span> データ取込（' + state.students.length + '人 / 男' + m + ' / 女' + f + '）';
+    '<span class="badge-num">①</span> データ取込';
 
   if (!state.students.length) {
     el.innerHTML = '<span style="color:var(--soft); font-size:13px">ここに名前が並びます</span>';
