@@ -562,7 +562,7 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       <h2><span class="badge-num">②</span> 教室の設定</h2>
       <div class="settings-row">
         <label>縦 <input type="number" id="rows" min="1" max="12" value="4" style="width:56px"></label>
-        <label>横 <input type="number" id="cols" min="1" max="12" value="4" style="width:56px"></label>
+        <label>横 <input type="number" id="cols" min="1" max="12" value="6" style="width:56px"></label>
         <span style="color:var(--soft); font-size:12px">黒板</span>
         <div class="bb-side-sel" id="bb-side-sel">
           <button data-side="top"    title="前">↑</button>
@@ -579,7 +579,7 @@ input[type=checkbox]{width:18px; height:18px; accent-color:var(--purple); cursor
       <div id="fix-panel" style="display:none; padding:10px; border:1px solid var(--line); border-radius:10px; background:#fbfaf6; margin:8px 0"></div>
       <div class="board" id="layout-board" data-side="top" style="background:#fafdfa; margin-top:14px">
         <div class="blackboard">黒板</div>
-        <div id="layout-grid" class="seat-grid" style="grid-template-columns:repeat(4,1fr)"></div>
+        <div id="layout-grid" class="seat-grid" style="grid-template-columns:repeat(6,1fr)"></div>
       </div>
     </div>
 
@@ -769,7 +769,7 @@ var LS_KEY = 'seating_app_v4_new';
 
 var state = {
   students: [],
-  rows: 4, cols: 4,
+  rows: 4, cols: 6,
   disabled: [],
   zoneM: [], zoneF: [],
   fixed: {},          // {seatIdx: studentId}
